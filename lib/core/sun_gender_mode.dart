@@ -1,0 +1,1 @@
+enum SunGenderMode { woman, man }

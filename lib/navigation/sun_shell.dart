@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../sun_home.dart';
-import '../theme/sun_theme.dart';
-import '../widgets/sun_bottom_menu.dart';
-import '../pages/food_page.dart';
-import '../pages/mission_page.dart';
-import '../pages/community_page.dart';
-import '../pages/profile_page.dart';
+import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
+import 'package:zdravi_pod_kontrolou/pages/dashboard_page.dart';
+import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
+import 'package:zdravi_pod_kontrolou/widgets/sun_bottom_menu.dart';
+import 'package:zdravi_pod_kontrolou/pages/food_page.dart';
+import 'package:zdravi_pod_kontrolou/pages/mission_page.dart';
+import 'package:zdravi_pod_kontrolou/pages/community_page.dart';
+import 'package:zdravi_pod_kontrolou/pages/profile_page.dart';
 
 class SunShell extends StatefulWidget {
   final ThemeMode themeMode;
@@ -35,7 +36,7 @@ class _SunShellState extends State<SunShell> {
       body: IndexedStack(
         index: index,
         children: [
-          SunHome(
+          DashboardPage(
             themeMode: widget.themeMode,
             genderMode: widget.genderMode,
             onToggleTheme: widget.onToggleTheme,

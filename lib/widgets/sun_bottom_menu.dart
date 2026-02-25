@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/sun_theme.dart';
+import '../core/sun_gender_mode.dart';
 
 class SunBottomMenu extends StatelessWidget {
   final int index;
@@ -21,8 +22,10 @@ class SunBottomMenu extends StatelessWidget {
     final accent = SunTheme.accent(genderMode, b);
 
     final menuBg = (b == Brightness.dark)
-        ? (theme.bottomNavigationBarTheme.backgroundColor ?? const Color(0xFF11111E))
-        : (theme.bottomNavigationBarTheme.backgroundColor ?? theme.colorScheme.surface);
+        ? (theme.bottomNavigationBarTheme.backgroundColor ??
+            const Color(0xFF11111E))
+        : (theme.bottomNavigationBarTheme.backgroundColor ??
+            theme.colorScheme.surface);
 
     final outerBorder = (b == Brightness.dark)
         ? Colors.white.withOpacity(0.08)
@@ -109,7 +112,9 @@ class _Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeBg = (brightness == Brightness.dark) ? const Color(0xFF080808) : Colors.white;
+    final activeBg = (brightness == Brightness.dark)
+        ? const Color(0xFF080808)
+        : Colors.white;
 
     final inactiveColor = (brightness == Brightness.dark)
         ? Colors.white.withOpacity(0.60)
@@ -136,7 +141,8 @@ class _Item extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 22, color: active ? activeColor : inactiveColor),
+                Icon(icon,
+                    size: 22, color: active ? activeColor : inactiveColor),
                 const SizedBox(height: 4),
                 Text(
                   label,

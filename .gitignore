@@ -20,3 +20,4 @@ ios/.symlinks/
 macos/Flutter/ephemeral/
 windows/flutter/ephemeral/
 linux/flutter/ephemeral/
+.env.local
