@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'; // není nutné
 
 /* ----------------------------- helpers ----------------------------- */
 
@@ -19,127 +21,20 @@ double lerpDouble(double a, double b, double t) => a + (b - a) * t;
 
 /* ----------------------------- mini i18n (inline) ----------------------------- */
 
-class L10n extends InheritedWidget {
-  final String lang; // 'cs' / 'en'
-  const L10n({super.key, required this.lang, required super.child});
+String t(BuildContext context, String key,
+    {Map<String, String> args = const {}}) {
+  final base = AppLocalizations.of(context).tr(key);
 
-  static L10n of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<L10n>()!;
+  var out = base;
 
-  @override
-  bool updateShouldNotify(L10n oldWidget) => oldWidget.lang != lang;
-}
-
-const Map<String, Map<String, String>> _strings = {
-  'cs': {
-    'app.title': 'GLP-1 TRACKER',
-    'app.subtitle': 'ULTRA GOLD + MENSTRUAČNÍ CYKLUS + AKCE',
-    'demo.woman': '🌸 Žena',
-    'demo.man': '⚡ Muž',
-    'demo.protein': 'Protein: {g}g',
-    'demo.water': 'Voda: {n} sklenic',
-    'demo.inj': 'Injekce za: {d} dny',
-    'demo.injHint': 'Nastav na 0 pro test tlačítka',
-    'demo.cycle': 'Cyklus: {d}. den',
-    'demo.mood': 'Nálada (1-5):',
-    'bloom.confirmed': 'POTVRZENO',
-    'bloom.tomorrow': 'ZÍTRA',
-    'bloom.apply': 'APLIKOVAT',
-    'bloom.confirmBtn': 'Potvrdit',
-    'mood.1': 'ODPOČÍVEJ',
-    'mood.2': 'KLIDNĚJI',
-    'mood.3': 'ROVNOVÁHA',
-    'mood.4': 'ROZKVÉTÁŠ',
-    'mood.5': 'ZÁŘÍŠ',
-    'cycle.m': 'MENSTRUACE',
-    'cycle.f': 'FOLIKULÁRNÍ',
-    'cycle.o': 'OVULACE',
-    'cycle.l': 'LUTEÁLNÍ',
-    'core.await': 'ČEKÁ NA INPUT',
-    'core.init': 'INITIALIZE',
-    'core.confirmed': 'DÁVKA POTVRZENA',
-    'core.t24': 'T-MINUS 24H',
-    'core.t48': 'T-MINUS 48H',
-    'core.deploy': 'NUTNÁ APLIKACE',
-    'core.inj': 'INJ: T-{d}D',
-  },
-  'en': {
-    'app.title': 'GLP-1 TRACKER',
-    'app.subtitle': 'ULTRA GOLD + MENSTRUAL CYCLE + ACTION',
-    'demo.woman': '🌸 Woman',
-    'demo.man': '⚡ Man',
-    'demo.protein': 'Protein: {g}g',
-    'demo.water': 'Water: {n} cups',
-    'demo.inj': 'Injection in: {d} days',
-    'demo.injHint': 'Set to 0 to test button',
-    'demo.cycle': 'Cycle day: {d}',
-    'demo.mood': 'Mood (1-5):',
-    'bloom.confirmed': 'CONFIRMED',
-    'bloom.tomorrow': 'TOMORROW',
-    'bloom.apply': 'APPLY',
-    'bloom.confirmBtn': 'Confirm',
-    'mood.1': 'REST',
-    'mood.2': 'CALMER',
-    'mood.3': 'BALANCE',
-    'mood.4': 'BLOOMING',
-    'mood.5': 'SHINING',
-    'cycle.m': 'MENSTRUATION',
-    'cycle.f': 'FOLLICULAR',
-    'cycle.o': 'OVULATION',
-    'cycle.l': 'LUTEAL',
-    'core.await': 'AWAITING INPUT',
-    'core.init': 'INITIALIZE',
-    'core.confirmed': 'DOSE CONFIRMED',
-    'core.t24': 'T-MINUS 24H',
-    'core.t48': 'T-MINUS 48H',
-    'core.deploy': 'DEPLOY REQUIRED',
-    'core.inj': 'INJ: T-{d}D',
+  for (final entry in args.entries) {
+    out = out.replaceAll('{${entry.key}}', entry.value);
   }
-};
 
-String t(BuildContext context, String key, {Map<String, String> args = const {}}) {
-  final lang = L10n.of(context).lang;
-  final table = _strings[lang] ?? _strings['en']!;
-  var out = table[key] ?? (_strings['en']![key] ?? key);
-  args.forEach((k, v) => out = out.replaceAll('{$k}', v));
   return out;
 }
 
 /* ----------------------------- app ----------------------------- */
-
-class GLP1DemoApp extends StatefulWidget {
-  const GLP1DemoApp({super.key});
-  @override
-  State<GLP1DemoApp> createState() => _GLP1DemoAppState();
-}
-
-class _GLP1DemoAppState extends State<GLP1DemoApp> {
-  String lang = 'cs';
-
-  @override
-  Widget build(BuildContext context) {
-    return L10n(
-      lang: lang,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark(useMaterial3: true),
-        home: GLP1DemoScreen(
-          lang: lang,
-          onToggleLang: () => setState(() => lang = (lang == 'cs') ? 'en' : 'cs'),
-        ),
-      ),
-    );
-  }
-}
-
-class GLP1DemoScreen extends StatefulWidget {
-  final String lang;
-  final VoidCallback onToggleLang;
-  const GLP1DemoScreen({super.key, required this.lang, required this.onToggleLang});
-
-  @override
-  State<GLP1DemoScreen> createState() => _GLP1DemoScreenState();
-}
 
 class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
   String variant = 'bloom';
@@ -160,18 +55,20 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
             child: Column(
               children: [
                 Text(t(context, 'app.title'),
-                    style: const TextStyle(fontSize: 20, letterSpacing: 2, fontWeight: FontWeight.w300)),
+                    style: const TextStyle(
+                        fontSize: 20,
+                        letterSpacing: 2,
+                        fontWeight: FontWeight.w300)),
                 const SizedBox(height: 6),
-                Text(t(context, 'app.subtitle'), style: const TextStyle(fontSize: 12, color: Color(0xFF666666))),
+                Text(t(context, 'app.subtitle'),
+                    style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF666666))),
                 const SizedBox(height: 8),
-
                 TextButton(
-                  onPressed: widget.onToggleLang,
-                  child: Text('Lang: ${widget.lang.toUpperCase()} (tap)'),
-                ),
-
+                    onPressed: () {},
+                    child: Text(
+                        'Lang: ${Localizations.localeOf(context).languageCode.toUpperCase()}')),
                 const SizedBox(height: 12),
-
                 if (variant == 'bloom')
                   GLP1BloomWidget(
                     proteinCurrent: protein,
@@ -189,9 +86,7 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                     daysUntilInjection: days,
                     moodLevel: mood,
                   ),
-
                 const SizedBox(height: 28),
-
                 Container(
                   width: 340,
                   padding: const EdgeInsets.all(16),
@@ -223,16 +118,17 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                         ],
                       ),
                       const SizedBox(height: 14),
-
                       _SliderRow(
-                        label: t(context, 'demo.protein', args: {'g': '${protein.round()}'}),
+                        label: t(context, 'demo.protein',
+                            args: {'g': '${protein.round()}'}),
                         min: 0,
                         max: 130,
                         value: protein,
                         onChanged: (v) => setState(() => protein = v),
                       ),
                       _SliderRow(
-                        label: t(context, 'demo.water', args: {'n': '${water.round()}'}),
+                        label: t(context, 'demo.water',
+                            args: {'n': '${water.round()}'}),
                         min: 0,
                         max: 8,
                         divisions: 8,
@@ -246,7 +142,9 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                             t(context, 'demo.inj', args: {'d': '$days'}),
                             style: TextStyle(
                               fontSize: 12,
-                              color: (days == 0) ? Colors.redAccent : const Color(0xFFAAAAAA),
+                              color: (days == 0)
+                                  ? Colors.redAccent
+                                  : const Color(0xFFAAAAAA),
                             ),
                           ),
                           Slider(
@@ -256,36 +154,44 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                             value: days.toDouble(),
                             onChanged: (v) => setState(() => days = v.round()),
                           ),
-                          Text(t(context, 'demo.injHint'), style: const TextStyle(fontSize: 10, color: Color(0xFF666666))),
+                          Text(t(context, 'demo.injHint'),
+                              style: const TextStyle(
+                                  fontSize: 10, color: Color(0xFF666666))),
                         ],
                       ),
                       const SizedBox(height: 10),
-
                       if (variant == 'bloom') ...[
                         _SliderRow(
-                          label: t(context, 'demo.cycle', args: {'d': '$cycleDay'}),
+                          label: t(context, 'demo.cycle',
+                              args: {'d': '$cycleDay'}),
                           min: 1,
                           max: 28,
                           divisions: 27,
                           value: cycleDay.toDouble(),
-                          onChanged: (v) => setState(() => cycleDay = v.round()),
+                          onChanged: (v) =>
+                              setState(() => cycleDay = v.round()),
                         ),
                       ],
-
                       const SizedBox(height: 8),
-                      Text(t(context, 'demo.mood'), style: const TextStyle(fontSize: 12, color: Color(0xFFAAAAAA))),
+                      Text(t(context, 'demo.mood'),
+                          style: const TextStyle(
+                              fontSize: 12, color: Color(0xFFAAAAAA))),
                       const SizedBox(height: 8),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: List.generate(5, (i) {
                           final m = i + 1;
                           Color bg;
-                          if (m == 1) bg = const Color(0xFF555555);
-                          else if (m == 2) bg = const Color(0xFF444466);
-                          else if (m == 3) bg = const Color(0xFF888888);
-                          else if (m == 4) bg = const Color(0xFFCC0066);
-                          else bg = const Color(0xFF008866);
+                          if (m == 1)
+                            bg = const Color(0xFF555555);
+                          else if (m == 2)
+                            bg = const Color(0xFF444466);
+                          else if (m == 3)
+                            bg = const Color(0xFF888888);
+                          else if (m == 4)
+                            bg = const Color(0xFFCC0066);
+                          else
+                            bg = const Color(0xFF008866);
 
                           return InkWell(
                             onTap: () => setState(() => mood = m),
@@ -298,11 +204,14 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                                 color: bg,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: (mood == m) ? Colors.white : const Color(0xFF333333),
+                                  color: (mood == m)
+                                      ? Colors.white
+                                      : const Color(0xFF333333),
                                   width: (mood == m) ? 2 : 1,
                                 ),
                               ),
-                              child: Text("$m", style: const TextStyle(color: Colors.white)),
+                              child: Text("$m",
+                                  style: const TextStyle(color: Colors.white)),
                             ),
                           );
                         }),
@@ -319,11 +228,19 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
   }
 }
 
+class GLP1DemoScreen extends StatefulWidget {
+  const GLP1DemoScreen({super.key});
+
+  @override
+  State<GLP1DemoScreen> createState() => _GLP1DemoScreenState();
+}
+
 class _DemoButton extends StatelessWidget {
   final String text;
   final bool active;
   final VoidCallback onTap;
-  const _DemoButton({required this.text, required this.active, required this.onTap});
+  const _DemoButton(
+      {required this.text, required this.active, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -337,7 +254,8 @@ class _DemoButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: const Color(0xFF555555)),
         ),
-        child: Center(child: Text(text, style: const TextStyle(color: Colors.white))),
+        child: Center(
+            child: Text(text, style: const TextStyle(color: Colors.white))),
       ),
     );
   }
@@ -365,7 +283,8 @@ class _SliderRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFFAAAAAA))),
+        Text(label,
+            style: const TextStyle(fontSize: 12, color: Color(0xFFAAAAAA))),
         Slider(
           min: min,
           max: max,
@@ -386,16 +305,49 @@ class BloomTheme {
   final Color bg;
   final Color glow;
   final String moodKey;
-  const BloomTheme({required this.core, required this.bg, required this.glow, required this.moodKey});
+  const BloomTheme(
+      {required this.core,
+      required this.bg,
+      required this.glow,
+      required this.moodKey});
 }
 
 BloomTheme getMoodTheme(int level) {
-  if (level == 1) return const BloomTheme(core: Color(0xFFA3A3FF), glow: Color.fromRGBO(120, 120, 255, 0.60), moodKey: 'mood.1', bg: Color.fromRGBO(40, 30, 60, 1));
-  if (level == 2) return const BloomTheme(core: Color(0xFF4DA6FF), glow: Color.fromRGBO(0, 150, 255, 0.60), moodKey: 'mood.2', bg: Color.fromRGBO(10, 40, 80, 1));
-  if (level == 3) return const BloomTheme(core: Colors.white, glow: Color.fromRGBO(255, 255, 255, 0.70), moodKey: 'mood.3', bg: Color.fromRGBO(50, 40, 60, 1));
-  if (level == 4) return const BloomTheme(core: Color(0xFFFF00DD), glow: Color.fromRGBO(255, 0, 220, 0.70), moodKey: 'mood.4', bg: Color.fromRGBO(60, 0, 40, 1));
-  if (level == 5) return const BloomTheme(core: Color(0xFF00FFE0), glow: Color.fromRGBO(0, 255, 220, 0.80), moodKey: 'mood.5', bg: Color.fromRGBO(0, 50, 50, 1));
-  return const BloomTheme(core: Color(0xFFFF00DD), glow: Color.fromRGBO(255, 0, 220, 0.60), moodKey: 'mood.4', bg: Colors.black);
+  if (level == 1)
+    return const BloomTheme(
+        core: Color(0xFFA3A3FF),
+        glow: Color.fromRGBO(120, 120, 255, 0.60),
+        moodKey: 'mood.1',
+        bg: Color.fromRGBO(40, 30, 60, 1));
+  if (level == 2)
+    return const BloomTheme(
+        core: Color(0xFF4DA6FF),
+        glow: Color.fromRGBO(0, 150, 255, 0.60),
+        moodKey: 'mood.2',
+        bg: Color.fromRGBO(10, 40, 80, 1));
+  if (level == 3)
+    return const BloomTheme(
+        core: Colors.white,
+        glow: Color.fromRGBO(255, 255, 255, 0.70),
+        moodKey: 'mood.3',
+        bg: Color.fromRGBO(50, 40, 60, 1));
+  if (level == 4)
+    return const BloomTheme(
+        core: Color(0xFFFF00DD),
+        glow: Color.fromRGBO(255, 0, 220, 0.70),
+        moodKey: 'mood.4',
+        bg: Color.fromRGBO(60, 0, 40, 1));
+  if (level == 5)
+    return const BloomTheme(
+        core: Color(0xFF00FFE0),
+        glow: Color.fromRGBO(0, 255, 220, 0.80),
+        moodKey: 'mood.5',
+        bg: Color.fromRGBO(0, 50, 50, 1));
+  return const BloomTheme(
+      core: Color(0xFFFF00DD),
+      glow: Color.fromRGBO(255, 0, 220, 0.60),
+      moodKey: 'mood.4',
+      bg: Colors.black);
 }
 
 class CyclePhase {
@@ -405,8 +357,10 @@ class CyclePhase {
 }
 
 CyclePhase getCyclePhase(int day) {
-  if (day <= 5) return const CyclePhase(color: Color(0xFFFF0055), key: 'cycle.m');
-  if (day <= 13) return const CyclePhase(color: Color(0xFFFF99CC), key: 'cycle.f');
+  if (day <= 5)
+    return const CyclePhase(color: Color(0xFFFF0055), key: 'cycle.m');
+  if (day <= 13)
+    return const CyclePhase(color: Color(0xFFFF99CC), key: 'cycle.f');
   if (day == 14) return const CyclePhase(color: Colors.white, key: 'cycle.o');
   return const CyclePhase(color: Color(0xFFA3A3FF), key: 'cycle.l');
 }
@@ -418,11 +372,20 @@ class CoreTheme {
 }
 
 CoreTheme getCoreTheme(int level) {
-  if (level == 1) return const CoreTheme(color: Color(0xFFFF0000), glow: Color.fromRGBO(255, 0, 0, 0.60));
-  if (level == 2) return const CoreTheme(color: Color(0xFFFF4500), glow: Color.fromRGBO(255, 69, 0, 0.50));
-  if (level == 3) return const CoreTheme(color: Color(0xFFFFCC00), glow: Color.fromRGBO(255, 204, 0, 0.40));
-  if (level == 4) return const CoreTheme(color: Color(0xFF00BFFF), glow: Color.fromRGBO(0, 191, 255, 0.40));
-  return const CoreTheme(color: Color(0xFF00FF00), glow: Color.fromRGBO(0, 255, 0, 0.50));
+  if (level == 1)
+    return const CoreTheme(
+        color: Color(0xFFFF0000), glow: Color.fromRGBO(255, 0, 0, 0.60));
+  if (level == 2)
+    return const CoreTheme(
+        color: Color(0xFFFF4500), glow: Color.fromRGBO(255, 69, 0, 0.50));
+  if (level == 3)
+    return const CoreTheme(
+        color: Color(0xFFFFCC00), glow: Color.fromRGBO(255, 204, 0, 0.40));
+  if (level == 4)
+    return const CoreTheme(
+        color: Color(0xFF00BFFF), glow: Color.fromRGBO(0, 191, 255, 0.40));
+  return const CoreTheme(
+      color: Color(0xFF00FF00), glow: Color.fromRGBO(0, 255, 0, 0.50));
 }
 
 /* ----------------------------- stars model ----------------------------- */
@@ -474,7 +437,8 @@ class GLP1BloomWidget extends StatefulWidget {
   State<GLP1BloomWidget> createState() => _GLP1BloomWidgetState();
 }
 
-class _GLP1BloomWidgetState extends State<GLP1BloomWidget> with TickerProviderStateMixin {
+class _GLP1BloomWidgetState extends State<GLP1BloomWidget>
+    with TickerProviderStateMixin {
   bool isConfirmed = false;
 
   late final AnimationController ambientCtrl;
@@ -487,10 +451,15 @@ class _GLP1BloomWidgetState extends State<GLP1BloomWidget> with TickerProviderSt
   @override
   void initState() {
     super.initState();
-    ambientCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat();
-    flashCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-    shakeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    injPulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    ambientCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
+          ..repeat();
+    flashCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
+    shakeCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    injPulseCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 900));
 
     stars = generateStars(15, 12345, 320);
     _syncAnim();
@@ -506,7 +475,8 @@ class _GLP1BloomWidgetState extends State<GLP1BloomWidget> with TickerProviderSt
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final needsShake = (!isConfirmed && widget.daysUntilInjection == 0);
-      final needsPulse = (!isConfirmed && (widget.daysUntilInjection == 0 || widget.daysUntilInjection == 1));
+      final needsPulse = (!isConfirmed &&
+          (widget.daysUntilInjection == 0 || widget.daysUntilInjection == 1));
 
       if (needsShake) {
         if (!shakeCtrl.isAnimating) shakeCtrl.repeat();
@@ -551,13 +521,19 @@ class _GLP1BloomWidgetState extends State<GLP1BloomWidget> with TickerProviderSt
     final outer = Colors.black;
 
     Color orbitStroke = const Color(0xFFFFD700);
-    if (isConfirmed) orbitStroke = const Color(0xFF00FFAA);
-    else if (widget.daysUntilInjection == 0) orbitStroke = const Color(0xFFFF0055);
-    else if (widget.daysUntilInjection == 1) orbitStroke = const Color(0xFFFF9500);
+    if (isConfirmed)
+      orbitStroke = const Color(0xFF00FFAA);
+    else if (widget.daysUntilInjection == 0)
+      orbitStroke = const Color(0xFFFF0055);
+    else if (widget.daysUntilInjection == 1)
+      orbitStroke = const Color(0xFFFF9500);
 
     final baseShadow = isDay0
         ? const [
-            BoxShadow(color: Color.fromRGBO(255, 0, 80, 0.60), blurRadius: 60, spreadRadius: 10),
+            BoxShadow(
+                color: Color.fromRGBO(255, 0, 80, 0.60),
+                blurRadius: 60,
+                spreadRadius: 10),
           ]
         : [
             BoxShadow(color: theme.glow, blurRadius: 80, spreadRadius: 10),
@@ -581,7 +557,8 @@ class _GLP1BloomWidgetState extends State<GLP1BloomWidget> with TickerProviderSt
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: RadialGradient(colors: [inner, outer], stops: const [0.0, 0.8]),
+          gradient:
+              RadialGradient(colors: [inner, outer], stops: const [0.0, 0.8]),
           boxShadow: baseShadow,
         ),
         child: Stack(
@@ -619,7 +596,8 @@ class _GLP1BloomWidgetState extends State<GLP1BloomWidget> with TickerProviderSt
                     child: Container(
                       width: size,
                       height: size,
-                      decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
                     ),
                   );
                 },
@@ -664,13 +642,15 @@ class _BloomOverlay extends StatefulWidget {
   State<_BloomOverlay> createState() => _BloomOverlayState();
 }
 
-class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderStateMixin {
+class _BloomOverlayState extends State<_BloomOverlay>
+    with SingleTickerProviderStateMixin {
   late final AnimationController pulseFastCtrl;
 
   @override
   void initState() {
     super.initState();
-    pulseFastCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
+    pulseFastCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2000));
     _sync();
   }
 
@@ -687,7 +667,8 @@ class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderS
   @override
   void didUpdateWidget(covariant _BloomOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.isConfirmed != widget.isConfirmed || oldWidget.daysUntilInjection != widget.daysUntilInjection) {
+    if (oldWidget.isConfirmed != widget.isConfirmed ||
+        oldWidget.daysUntilInjection != widget.daysUntilInjection) {
       _sync();
     }
   }
@@ -728,12 +709,17 @@ class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderS
               fontSize: 42,
               fontWeight: FontWeight.w300,
               color: Colors.white,
-              shadows: [Shadow(color: widget.theme.core.withOpacity(0.35), blurRadius: 12)],
+              shadows: [
+                Shadow(
+                    color: widget.theme.core.withOpacity(0.35), blurRadius: 12)
+              ],
             ),
           ),
           Transform.translate(
             offset: const Offset(22, -20),
-            child: Text("g", style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.7))),
+            child: Text("g",
+                style: TextStyle(
+                    fontSize: 16, color: Colors.white.withOpacity(0.7))),
           ),
           const SizedBox(height: 2),
 
@@ -742,7 +728,11 @@ class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderS
             offset: const Offset(0, -10),
             child: Text(
               topLabel,
-              style: TextStyle(fontSize: 10, letterSpacing: 2, color: labelColor, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  fontSize: 10,
+                  letterSpacing: 2,
+                  color: labelColor,
+                  fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(height: 3),
@@ -750,7 +740,8 @@ class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderS
             offset: const Offset(0, -10),
             child: Text(
               "${widget.menstrualDay}. DEN ($phaseText)",
-              style: TextStyle(fontSize: 9, color: widget.cycle.color, height: 1),
+              style:
+                  TextStyle(fontSize: 9, color: widget.cycle.color, height: 1),
             ),
           ),
         ],
@@ -760,7 +751,8 @@ class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderS
     return AnimatedBuilder(
       animation: pulseFastCtrl,
       builder: (_, __) {
-        final s = lerpDouble(1.0, 1.05, Curves.easeInOut.transform(pulseFastCtrl.value));
+        final s = lerpDouble(
+            1.0, 1.05, Curves.easeInOut.transform(pulseFastCtrl.value));
         return Transform.scale(
           scale: s,
           child: Column(
@@ -784,19 +776,29 @@ class _BloomOverlayState extends State<_BloomOverlay> with SingleTickerProviderS
                   shadowColor: Colors.transparent,
                   elevation: 0,
                   padding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
                 ),
                 child: Ink(
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [Color(0xFFFF0055), Color(0xFFFF5500)]),
+                    gradient: const LinearGradient(
+                        colors: [Color(0xFFFF0055), Color(0xFFFF5500)]),
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: const [BoxShadow(color: Color.fromRGBO(255, 0, 85, 0.8), blurRadius: 20)],
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromRGBO(255, 0, 85, 0.8),
+                          blurRadius: 20)
+                    ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                     child: Text(t(context, 'bloom.confirmBtn'),
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
                   ),
                 ),
               ),
@@ -844,7 +846,11 @@ class _BloomPainter extends CustomPainter {
 
     // stars twinkle
     for (final st in stars) {
-      final tw = (0.35 + 0.65 * (0.5 + 0.5 * math.sin((ambient * math.pi * 2 * st.speed) + st.phase)));
+      final tw = (0.35 +
+          0.65 *
+              (0.5 +
+                  0.5 *
+                      math.sin((ambient * math.pi * 2 * st.speed) + st.phase)));
       final p = Paint()..color = Colors.white.withOpacity(0.15 + 0.55 * tw);
       canvas.drawCircle(Offset(st.x, st.y), st.r, p);
     }
@@ -853,7 +859,9 @@ class _BloomPainter extends CustomPainter {
     final radiusCycle = 110.0;
     final radiusProtein = 65.0;
 
-    final proteinPct = (proteinGoal <= 0) ? 0.0 : clampDouble((proteinCurrent / proteinGoal) * 100.0, 0, 100);
+    final proteinPct = (proteinGoal <= 0)
+        ? 0.0
+        : clampDouble((proteinCurrent / proteinGoal) * 100.0, 0, 100);
     final sweepProtein = (proteinPct / 100) * 2 * math.pi;
 
     // orbit geometry
@@ -879,14 +887,17 @@ class _BloomPainter extends CustomPainter {
       ..color = const Color(0xFFFFD700).withOpacity(0.15);
     canvas.drawCircle(c, radiusOrbit, track);
 
-    final needsPulse = (!isConfirmed && (daysUntilInjection == 0 || daysUntilInjection == 1));
+    final needsPulse =
+        (!isConfirmed && (daysUntilInjection == 0 || daysUntilInjection == 1));
     final pulseT = needsPulse ? Curves.easeInOut.transform(pulse) : 0.0;
 
     final arcWidth = needsPulse ? lerpDouble(4, 6, pulseT) : 4.0;
     final glowBlur = needsPulse ? lerpDouble(8, 14, pulseT) : 10.0;
     final glowOpacity = needsPulse ? lerpDouble(0.65, 0.95, pulseT) : 0.85;
 
-    double arcSweep = isConfirmed ? 2 * math.pi : ((7 - daysUntilInjection) / 7.0) * 2 * math.pi;
+    double arcSweep = isConfirmed
+        ? 2 * math.pi
+        : ((7 - daysUntilInjection) / 7.0) * 2 * math.pi;
 
     if (arcSweep > 0.01) {
       final glowPaint = Paint()
@@ -902,8 +913,10 @@ class _BloomPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..color = orbitStroke;
 
-      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit), -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, glowPaint);
-      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit), -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, arcPaint);
+      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit),
+          -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, glowPaint);
+      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit),
+          -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, arcPaint);
     }
 
     if (!isConfirmed) {
@@ -940,7 +953,9 @@ class _BloomPainter extends CustomPainter {
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: orbitStroke,
-            shadows: [Shadow(color: orbitStroke.withOpacity(0.9), blurRadius: 12)],
+            shadows: [
+              Shadow(color: orbitStroke.withOpacity(0.9), blurRadius: 12)
+            ],
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -954,7 +969,8 @@ class _BloomPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
       ..color = Colors.white.withOpacity(0.15);
-    final cyclePath = Path()..addOval(Rect.fromCircle(center: c, radius: radiusCycle));
+    final cyclePath = Path()
+      ..addOval(Rect.fromCircle(center: c, radius: radiusCycle));
     final pm = cyclePath.computeMetrics().first;
     const dash = 2.0;
     const gap = 4.0;
@@ -1051,70 +1067,71 @@ class _BloomPainter extends CustomPainter {
 
   // ✅ původní petals styl (stroke active 2 / inactive 0.5, glow jen když active)
   // ✅ ŽENA / BLOOM — VODA (Lístky) — “původní” vzhled (glow+sharp frame jako Core)
-void _paintPetals(Canvas canvas, Offset c, double water) {
-  const count = 12;
-  final step = 2 * math.pi / count;
-  final active = ((water / 8.0) * count).floor().clamp(0, count);
+  void _paintPetals(Canvas canvas, Offset c, double water) {
+    const count = 12;
+    final step = 2 * math.pi / count;
+    final active = ((water / 8.0) * count).floor().clamp(0, count);
 
-  for (int i = 0; i < count; i++) {
-    final isActive = i < active;
-    final rot = i * step;
+    for (int i = 0; i < count; i++) {
+      final isActive = i < active;
+      final rot = i * step;
 
-    canvas.save();
-    canvas.translate(c.dx, c.dy);
-    canvas.rotate(rot);
-    canvas.translate(-c.dx, -c.dy);
+      canvas.save();
+      canvas.translate(c.dx, c.dy);
+      canvas.rotate(rot);
+      canvas.translate(-c.dx, -c.dy);
 
-    final path = Path()
-      ..moveTo(c.dx, c.dy - 75)
-      ..quadraticBezierTo(c.dx + 15, c.dy - 100, c.dx, c.dy - 120)
-      ..quadraticBezierTo(c.dx - 15, c.dy - 100, c.dx, c.dy - 75)
-      ..close();
+      final path = Path()
+        ..moveTo(c.dx, c.dy - 75)
+        ..quadraticBezierTo(c.dx + 15, c.dy - 100, c.dx, c.dy - 120)
+        ..quadraticBezierTo(c.dx - 15, c.dy - 100, c.dx, c.dy - 75)
+        ..close();
 
-    // Gradient je lokální kolem lístku (to je důležitý rozdíl oproti “celé kružnici”)
-    final fillPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..shader = isActive
-          ? const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.white, Color(0xFFCCFFFF), Color(0xFF00FFFF)],
-              stops: [0.0, 0.4, 1.0],
-            ).createShader(Rect.fromLTWH(c.dx - 30, c.dy - 130, 60, 80))
-          : null
-      ..color = isActive ? Colors.white : Colors.black.withOpacity(0.2);
+      // Gradient je lokální kolem lístku (to je důležitý rozdíl oproti “celé kružnici”)
+      final fillPaint = Paint()
+        ..style = PaintingStyle.fill
+        ..shader = isActive
+            ? const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.white, Color(0xFFCCFFFF), Color(0xFF00FFFF)],
+                stops: [0.0, 0.4, 1.0],
+              ).createShader(Rect.fromLTWH(c.dx - 30, c.dy - 130, 60, 80))
+            : null
+        ..color = isActive ? Colors.white : Colors.black.withOpacity(0.2);
 
-    // Fill glow (zůstává)
-    if (isActive) {
-      fillPaint.maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+      // Fill glow (zůstává)
+      if (isActive) {
+        fillPaint.maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+      }
+
+      // 1) Outer white frame (glow)
+      final strokeGlow = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = isActive ? 3.5 : 0.8
+        ..color = (isActive ? Colors.white : Colors.white.withOpacity(0.12))
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, isActive ? 4 : 0);
+
+      // 2) Crisp white frame (sharp)
+      final strokeSharp = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = isActive ? 1.6 : 0.6
+        ..color = (isActive ? Colors.white : Colors.white.withOpacity(0.10));
+
+      canvas.drawPath(path, fillPaint);
+
+      // draw frame like Core: glow + sharp edge
+      canvas.drawPath(path, strokeGlow);
+      canvas.drawPath(path, strokeSharp);
+
+      // dot (bez cyan glow – přesně jak máš ve snippet)
+      final dot = Paint()
+        ..color = Colors.white.withOpacity(isActive ? 1.0 : 0.3);
+      canvas.drawCircle(Offset(c.dx, c.dy - 105), isActive ? 2 : 1, dot);
+
+      canvas.restore();
     }
-
-    // 1) Outer white frame (glow)
-    final strokeGlow = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = isActive ? 3.5 : 0.8
-      ..color = (isActive ? Colors.white : Colors.white.withOpacity(0.12))
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, isActive ? 4 : 0);
-
-    // 2) Crisp white frame (sharp)
-    final strokeSharp = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = isActive ? 1.6 : 0.6
-      ..color = (isActive ? Colors.white : Colors.white.withOpacity(0.10));
-
-    canvas.drawPath(path, fillPaint);
-
-    // draw frame like Core: glow + sharp edge
-    canvas.drawPath(path, strokeGlow);
-    canvas.drawPath(path, strokeSharp);
-
-    // dot (bez cyan glow – přesně jak máš ve snippet)
-    final dot = Paint()..color = Colors.white.withOpacity(isActive ? 1.0 : 0.3);
-    canvas.drawCircle(Offset(c.dx, c.dy - 105), isActive ? 2 : 1, dot);
-
-    canvas.restore();
   }
-}
 
   @override
   bool shouldRepaint(covariant _BloomPainter oldDelegate) => true;
@@ -1142,7 +1159,8 @@ class GLP1CoreWidget extends StatefulWidget {
   State<GLP1CoreWidget> createState() => _GLP1CoreWidgetState();
 }
 
-class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStateMixin {
+class _GLP1CoreWidgetState extends State<GLP1CoreWidget>
+    with TickerProviderStateMixin {
   bool isConfirmed = false;
 
   late final AnimationController ambientCtrl;
@@ -1154,9 +1172,13 @@ class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    ambientCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat();
-    flashCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    injPulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    ambientCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
+          ..repeat();
+    flashCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+    injPulseCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 900));
     stars = generateStars(10, 98765, 320);
     _syncAnim();
   }
@@ -1170,7 +1192,8 @@ class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStat
   void _syncAnim() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final needsPulse = (!isConfirmed && (widget.daysUntilInjection == 0 || widget.daysUntilInjection == 1));
+      final needsPulse = (!isConfirmed &&
+          (widget.daysUntilInjection == 0 || widget.daysUntilInjection == 1));
       if (needsPulse) {
         if (!injPulseCtrl.isAnimating) injPulseCtrl.repeat(reverse: true);
       } else {
@@ -1202,7 +1225,8 @@ class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStat
     final isDay0 = (!isConfirmed && widget.daysUntilInjection == 0);
 
     Color orbitColor = theme.color;
-    String statusLabel = t(context, 'core.inj', args: {'d': '${widget.daysUntilInjection}'});
+    String statusLabel =
+        t(context, 'core.inj', args: {'d': '${widget.daysUntilInjection}'});
 
     if (isConfirmed) {
       orbitColor = const Color(0xFF00FF00);
@@ -1218,17 +1242,27 @@ class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStat
       statusLabel = t(context, 'core.t48');
     }
 
-    final bgInner = isDay0 ? const Color(0xFF3A0000) : theme.glow.withOpacity(0.9);
+    final bgInner =
+        isDay0 ? const Color(0xFF3A0000) : theme.glow.withOpacity(0.9);
     final bgOuter = const Color.fromRGBO(10, 10, 15, 1);
 
     final shadow = isDay0
         ? const [
-            BoxShadow(color: Color.fromRGBO(255, 0, 0, 0.5), blurRadius: 50, spreadRadius: 8),
-            BoxShadow(color: Color.fromRGBO(255, 0, 0, 0.3), blurRadius: 30, spreadRadius: -10),
+            BoxShadow(
+                color: Color.fromRGBO(255, 0, 0, 0.5),
+                blurRadius: 50,
+                spreadRadius: 8),
+            BoxShadow(
+                color: Color.fromRGBO(255, 0, 0, 0.3),
+                blurRadius: 30,
+                spreadRadius: -10),
           ]
         : [
             BoxShadow(color: theme.glow, blurRadius: 50, spreadRadius: 6),
-            const BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.9), blurRadius: 20, spreadRadius: -10),
+            const BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.9),
+                blurRadius: 20,
+                spreadRadius: -10),
           ];
 
     return Container(
@@ -1236,7 +1270,8 @@ class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStat
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(colors: [bgInner, bgOuter], stops: const [0.0, 0.7]),
+        gradient:
+            RadialGradient(colors: [bgInner, bgOuter], stops: const [0.0, 0.7]),
         boxShadow: shadow,
         border: Border.all(color: const Color(0xFF333333), width: 2),
       ),
@@ -1273,7 +1308,8 @@ class _GLP1CoreWidgetState extends State<GLP1CoreWidget> with TickerProviderStat
                   child: Container(
                     width: size,
                     height: size,
-                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
                   ),
                 );
               },
@@ -1320,13 +1356,15 @@ class _CoreOverlay extends StatefulWidget {
   State<_CoreOverlay> createState() => _CoreOverlayState();
 }
 
-class _CoreOverlayState extends State<_CoreOverlay> with SingleTickerProviderStateMixin {
+class _CoreOverlayState extends State<_CoreOverlay>
+    with SingleTickerProviderStateMixin {
   late final AnimationController pulseFastCtrl;
 
   @override
   void initState() {
     super.initState();
-    pulseFastCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    pulseFastCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1000));
     _sync();
   }
 
@@ -1343,7 +1381,8 @@ class _CoreOverlayState extends State<_CoreOverlay> with SingleTickerProviderSta
   @override
   void didUpdateWidget(covariant _CoreOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.isConfirmed != widget.isConfirmed || oldWidget.daysUntilInjection != widget.daysUntilInjection) {
+    if (oldWidget.isConfirmed != widget.isConfirmed ||
+        oldWidget.daysUntilInjection != widget.daysUntilInjection) {
       _sync();
     }
   }
@@ -1360,7 +1399,8 @@ class _CoreOverlayState extends State<_CoreOverlay> with SingleTickerProviderSta
 
     final proteinPct = (widget.proteinGoal <= 0)
         ? 0.0
-        : clampDouble((widget.proteinCurrent / widget.proteinGoal) * 100.0, 0, 100);
+        : clampDouble(
+            (widget.proteinCurrent / widget.proteinGoal) * 100.0, 0, 100);
 
     if (showStats) {
       final grams = widget.proteinCurrent.round();
@@ -1390,8 +1430,12 @@ class _CoreOverlayState extends State<_CoreOverlay> with SingleTickerProviderSta
                     letterSpacing: letterSpacing,
                     color: grams == 0 ? const Color(0xFFAAAAAA) : Colors.white,
                     shadows: [
-                      Shadow(color: widget.displayColor.withOpacity(0.55), blurRadius: 10),
-                      Shadow(color: widget.displayColor.withOpacity(0.25), blurRadius: 20),
+                      Shadow(
+                          color: widget.displayColor.withOpacity(0.55),
+                          blurRadius: 10),
+                      Shadow(
+                          color: widget.displayColor.withOpacity(0.25),
+                          blurRadius: 20),
                     ],
                   ),
                 ),
@@ -1413,18 +1457,29 @@ class _CoreOverlayState extends State<_CoreOverlay> with SingleTickerProviderSta
           const SizedBox(height: 2),
           Text(
             "${proteinPct.round()}%",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: widget.displayColor),
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: widget.displayColor),
           ),
           const SizedBox(height: 6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              border: Border.all(color: widget.isConfirmed ? const Color(0xFF00FF00) : widget.displayColor),
+              border: Border.all(
+                  color: widget.isConfirmed
+                      ? const Color(0xFF00FF00)
+                      : widget.displayColor),
               color: Colors.black.withOpacity(0.6),
             ),
             child: Text(
               widget.statusLabel,
-              style: TextStyle(fontSize: 10, letterSpacing: 2, color: widget.isConfirmed ? const Color(0xFF00FF00) : widget.displayColor),
+              style: TextStyle(
+                  fontSize: 10,
+                  letterSpacing: 2,
+                  color: widget.isConfirmed
+                      ? const Color(0xFF00FF00)
+                      : widget.displayColor),
             ),
           ),
         ],
@@ -1445,20 +1500,27 @@ class _CoreOverlayState extends State<_CoreOverlay> with SingleTickerProviderSta
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
                 color: const Color(0xFFFF0055).withOpacity(a),
-                shadows: const [Shadow(color: Color(0xFFFF0055), blurRadius: 10)],
+                shadows: const [
+                  Shadow(color: Color(0xFFFF0055), blurRadius: 10)
+                ],
               ),
             ),
             const SizedBox(height: 10),
             InkWell(
               onTap: widget.onConfirm,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.8),
                   border: Border.all(color: const Color(0xFFFF0055), width: 2),
                   boxShadow: const [
-                    BoxShadow(color: Color.fromRGBO(255, 0, 0, 0.6), blurRadius: 15),
-                    BoxShadow(color: Color.fromRGBO(255, 0, 0, 0.3), blurRadius: 10, spreadRadius: -6),
+                    BoxShadow(
+                        color: Color.fromRGBO(255, 0, 0, 0.6), blurRadius: 15),
+                    BoxShadow(
+                        color: Color.fromRGBO(255, 0, 0, 0.3),
+                        blurRadius: 10,
+                        spreadRadius: -6),
                   ],
                 ),
                 child: Text(
@@ -1526,7 +1588,11 @@ class _CorePainter extends CustomPainter {
 
     // stars
     for (final st in stars) {
-      final tw = (0.35 + 0.65 * (0.5 + 0.5 * math.sin((ambient * math.pi * 2 * st.speed) + st.phase)));
+      final tw = (0.35 +
+          0.65 *
+              (0.5 +
+                  0.5 *
+                      math.sin((ambient * math.pi * 2 * st.speed) + st.phase)));
       final p = Paint()..color = Colors.white.withOpacity(0.08 + 0.35 * tw);
       canvas.drawCircle(Offset(st.x, st.y), st.r, p);
     }
@@ -1541,7 +1607,8 @@ class _CorePainter extends CustomPainter {
       ..strokeWidth = 1
       ..color = orbitColor.withOpacity(0.20);
 
-    final trackPath = Path()..addOval(Rect.fromCircle(center: c, radius: radiusOrbit));
+    final trackPath = Path()
+      ..addOval(Rect.fromCircle(center: c, radius: radiusOrbit));
     final pm = trackPath.computeMetrics().first;
     const dash = 5.0;
     const gap = 5.0;
@@ -1553,13 +1620,16 @@ class _CorePainter extends CustomPainter {
     }
 
     // orbit arc
-    final needsPulse = (!isConfirmed && (daysUntilInjection == 0 || daysUntilInjection == 1));
+    final needsPulse =
+        (!isConfirmed && (daysUntilInjection == 0 || daysUntilInjection == 1));
     final pulseT = needsPulse ? Curves.easeInOut.transform(pulse) : 0.0;
 
     final arcWidth = needsPulse ? lerpDouble(5, 7, pulseT) : 5.0;
     final blur = needsPulse ? lerpDouble(8, 14, pulseT) : 10.0;
 
-    double arcSweep = isConfirmed ? 2 * math.pi : ((7 - daysUntilInjection) / 7.0) * 2 * math.pi;
+    double arcSweep = isConfirmed
+        ? 2 * math.pi
+        : ((7 - daysUntilInjection) / 7.0) * 2 * math.pi;
 
     if (arcSweep > 0.01) {
       final glow = Paint()
@@ -1575,8 +1645,10 @@ class _CorePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..color = orbitColor;
 
-      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit), -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, glow);
-      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit), -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, main);
+      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit),
+          -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, glow);
+      canvas.drawArc(Rect.fromCircle(center: c, radius: radiusOrbit),
+          -math.pi / 2, safeSweep(arcSweep, eps: 0.01), false, main);
     }
 
     // syringe + number
@@ -1615,7 +1687,9 @@ class _CorePainter extends CustomPainter {
             fontFamily: 'Courier',
             fontWeight: FontWeight.bold,
             color: orbitColor,
-            shadows: [Shadow(color: orbitColor.withOpacity(0.9), blurRadius: 12)],
+            shadows: [
+              Shadow(color: orbitColor.withOpacity(0.9), blurRadius: 12)
+            ],
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -1649,7 +1723,8 @@ class _CorePainter extends CustomPainter {
       ..strokeWidth = 1
       ..color = theme.color.withOpacity(0.6);
 
-    final dashPath = Path()..addOval(Rect.fromCircle(center: c, radius: radiusProteinOuter));
+    final dashPath = Path()
+      ..addOval(Rect.fromCircle(center: c, radius: radiusProteinOuter));
     final pm2 = dashPath.computeMetrics().first;
     const dash2 = 10.0;
     const gap2 = 30.0;
@@ -1670,7 +1745,9 @@ class _CorePainter extends CustomPainter {
         ..color = const Color(0xFF111111),
     );
 
-    final pct = (proteinGoal <= 0) ? 0.0 : clampDouble((proteinCurrent / proteinGoal) * 100.0, 0, 100);
+    final pct = (proteinGoal <= 0)
+        ? 0.0
+        : clampDouble((proteinCurrent / proteinGoal) * 100.0, 0, 100);
     final sweep = (pct / 100) * 2 * math.pi;
 
     if (proteinCurrent > 0) {
@@ -1696,7 +1773,8 @@ class _CorePainter extends CustomPainter {
       );
     }
 
-    canvas.drawCircle(c, radiusProteinInner - 10, Paint()..color = Colors.black.withOpacity(0.8));
+    canvas.drawCircle(c, radiusProteinInner - 10,
+        Paint()..color = Colors.black.withOpacity(0.8));
     canvas.drawCircle(
       c,
       radiusProteinInner - 10,
@@ -1708,7 +1786,7 @@ class _CorePainter extends CustomPainter {
   }
 
   // ✅ MUŽ / CORE — VODA (Cells) — definice vzhledu
-void _paintCells(Canvas canvas, Offset c, double water) {
+  void _paintCells(Canvas canvas, Offset c, double water) {
     const count = 16;
     final step = 2 * math.pi / count;
     final active = ((water / 8.0) * count).floor().clamp(0, count);
@@ -1738,7 +1816,8 @@ void _paintCells(Canvas canvas, Offset c, double water) {
             : null
         ..color = isActive ? const Color(0xFF00BFFF) : const Color(0xFF1A1A2E);
 
-      if (isActive) fill.maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+      if (isActive)
+        fill.maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
 
       final stroke = Paint()
         ..style = PaintingStyle.stroke
@@ -1750,7 +1829,6 @@ void _paintCells(Canvas canvas, Offset c, double water) {
       canvas.restore();
     }
   }
-
 
   @override
   bool shouldRepaint(covariant _CorePainter oldDelegate) => true;

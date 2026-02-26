@@ -12,6 +12,9 @@ import 'package:zdravi_pod_kontrolou/pages/community_page.dart';
 import 'package:zdravi_pod_kontrolou/pages/more_page.dart';
 import 'package:zdravi_pod_kontrolou/widgets/sun_bottom_menu.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,18 +25,17 @@ Future<void> main() async {
     ),
   );
 
-  runApp(const SunApp());
+  // 🔥 Načtení uložených settings
+  final settings = AppSettings();
+  await settings.load();
+
+  runApp(SunApp(settings: settings));
 }
 
-class SunApp extends StatefulWidget {
-  const SunApp({super.key});
+class SunApp extends StatelessWidget {
+  final AppSettings settings;
 
-  @override
-  State<SunApp> createState() => _SunAppState();
-}
-
-class _SunAppState extends State<SunApp> {
-  final AppSettings settings = AppSettings();
+  const SunApp({super.key, required this.settings});
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +46,22 @@ class _SunAppState extends State<SunApp> {
         builder: (_, __) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+
+            // 🔥 THEME
             theme: SunTheme.light(settings.genderMode),
             darkTheme: SunTheme.dark(settings.genderMode),
             themeMode: settings.themeMode,
+
+            // 🔥 LOCALE
+            locale: settings.locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+
             home: const SunShell(),
           );
         },
@@ -78,12 +93,12 @@ class _SunShellState extends State<SunShell> {
     return Scaffold(
       body: IndexedStack(
         index: index,
-        children: [
-          const DashboardPage(),
-          const DiaryPage(),
-          const CorePage(),
-          const CommunityPage(),
-          const MorePage(),
+        children: const [
+          DashboardPage(),
+          DiaryPage(),
+          CorePage(),
+          CommunityPage(),
+          MorePage(),
         ],
       ),
       bottomNavigationBar: SafeArea(
