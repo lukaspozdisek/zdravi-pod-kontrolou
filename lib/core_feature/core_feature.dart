@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'; // není nutné
+import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
+import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
 
 /* ----------------------------- helpers ----------------------------- */
 
@@ -46,6 +48,8 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = AppScope.of(context);
+    final isWoman = settings.genderMode == SunGenderMode.woman;
     return Scaffold(
       backgroundColor: const Color(0xFF050505),
       body: SafeArea(
@@ -69,23 +73,23 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                     child: Text(
                         'Lang: ${Localizations.localeOf(context).languageCode.toUpperCase()}')),
                 const SizedBox(height: 12),
-                if (variant == 'bloom')
-                  GLP1BloomWidget(
-                    proteinCurrent: protein,
-                    proteinGoal: 120,
-                    waterCurrent: water,
-                    daysUntilInjection: days,
-                    menstrualDay: cycleDay,
-                    moodLevel: mood,
-                  )
+                if (isWoman)
+                 GLP1BloomWidget(
+                  proteinCurrent: protein,
+                   proteinGoal: 120,
+                   waterCurrent: water,
+                   daysUntilInjection: days,
+                     menstrualDay: cycleDay,
+                     moodLevel: mood,
+                     )
                 else
-                  GLP1CoreWidget(
-                    proteinCurrent: protein,
-                    proteinGoal: 120,
-                    waterCurrent: water,
-                    daysUntilInjection: days,
-                    moodLevel: mood,
-                  ),
+                GLP1CoreWidget(
+                proteinCurrent: protein,
+                proteinGoal: 120,
+                waterCurrent: water,
+                daysUntilInjection: days,
+                moodLevel: mood,
+               )
                 const SizedBox(height: 28),
                 Container(
                   width: 340,
@@ -104,7 +108,7 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                             child: _DemoButton(
                               text: t(context, 'demo.woman'),
                               active: variant == 'bloom',
-                              onTap: () => setState(() => variant = 'bloom'),
+                              onTap: () => settings.setGenderMode(SunGenderMode.woman),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -112,7 +116,7 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                             child: _DemoButton(
                               text: t(context, 'demo.man'),
                               active: variant == 'core',
-                              onTap: () => setState(() => variant = 'core'),
+                              onTap: () => settings.setGenderMode(SunGenderMode.man),
                             ),
                           ),
                         ],
