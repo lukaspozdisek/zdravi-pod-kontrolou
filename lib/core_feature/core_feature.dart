@@ -74,22 +74,22 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                         'Lang: ${Localizations.localeOf(context).languageCode.toUpperCase()}')),
                 const SizedBox(height: 12),
                 if (isWoman)
-                 GLP1BloomWidget(
-                  proteinCurrent: protein,
-                   proteinGoal: 120,
-                   waterCurrent: water,
-                   daysUntilInjection: days,
-                     menstrualDay: cycleDay,
-                     moodLevel: mood,
-                     )
+                  GLP1BloomWidget(
+                    proteinCurrent: protein,
+                    proteinGoal: 120,
+                    waterCurrent: water,
+                    daysUntilInjection: days,
+                    menstrualDay: cycleDay,
+                    moodLevel: mood,
+                  )
                 else
-                GLP1CoreWidget(
-                proteinCurrent: protein,
-                proteinGoal: 120,
-                waterCurrent: water,
-                daysUntilInjection: days,
-                moodLevel: mood,
-               )
+                  GLP1CoreWidget(
+                    proteinCurrent: protein,
+                    proteinGoal: 120,
+                    waterCurrent: water,
+                    daysUntilInjection: days,
+                    moodLevel: mood,
+                  ),
                 const SizedBox(height: 28),
                 Container(
                   width: 340,
@@ -108,7 +108,8 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                             child: _DemoButton(
                               text: t(context, 'demo.woman'),
                               active: variant == 'bloom',
-                              onTap: () => settings.setGenderMode(SunGenderMode.woman),
+                              onTap: () =>
+                                  settings.setGenderMode(SunGenderMode.woman),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -116,7 +117,8 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
                             child: _DemoButton(
                               text: t(context, 'demo.man'),
                               active: variant == 'core',
-                              onTap: () => settings.setGenderMode(SunGenderMode.man),
+                              onTap: () =>
+                                  settings.setGenderMode(SunGenderMode.man),
                             ),
                           ),
                         ],
