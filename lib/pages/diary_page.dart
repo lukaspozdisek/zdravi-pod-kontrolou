@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:convex_flutter/convex_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class DiaryPage extends StatelessWidget {
   const DiaryPage({super.key});

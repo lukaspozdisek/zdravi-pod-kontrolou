@@ -1,0 +1,59 @@
+{
+  "app.title": "GLP-1 TRACKER",
+  "app.subtitle": "ULTRA GOLD + MENSTRUAL CYCLE + ACTION",
+
+  "more.title": "More",
+
+  "settings.title": "Settings",
+  "settings.theme": "Appearance",
+  "settings.theme.subtitle": "Choose dark, light or system mode",
+  "settings.gender": "Mode",
+  "settings.gender.subtitle": "Changes app accent styling",
+  "settings.language": "Language",
+  "settings.language.subtitle": "Choose application language",
+
+  "about.title": "About",
+  "about.subtitle": "Health Under Control • 2026",
+
+  "bloom.confirmed": "CONFIRMED",
+  "bloom.tomorrow": "TOMORROW",
+  "bloom.apply": "APPLY",
+  "bloom.confirmButton": "Confirm",
+  "bloom.dayLabel": "DAY {day} ({phase})",
+
+  "mood.rest": "REST",
+  "mood.calm": "CALMER",
+  "mood.balance": "BALANCE",
+  "mood.bloom": "BLOOMING",
+  "mood.shine": "SHINING",
+  "mood.status": "STATUS",
+
+  "cycle.menstruation": "MENSTRUATION",
+  "cycle.follicular": "FOLLICULAR",
+  "cycle.ovulation": "OVULATION",
+  "cycle.luteal": "LUTEAL",
+
+  "demo.woman": "🌸 Woman",
+  "demo.man": "⚡ Man",
+  "demo.protein": "Protein: {g}g",
+  "demo.water": "Water: {n}",
+  "demo.injection": "Injection in: {d} days (set 0 to test button)",
+  "demo.cycle": "Cycle day: {d}",
+  "demo.mood": "Mood (1-5):",
+
+"settings.theme.system": "System",
+"settings.theme.light": "Light",
+"settings.theme.dark": "Dark",
+
+"settings.gender.woman": "Woman",
+"settings.gender.man": "Man",
+
+"language.cs": "Czech",
+"language.en": "English",
+
+"tab.dashboard": "Overview",
+"tab.diary": "Diary",
+"tab.core": "Core",
+"tab.community": "Community",
+"tab.more": "More"
+}

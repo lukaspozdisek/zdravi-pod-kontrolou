@@ -1,0 +1,59 @@
+{
+  "app.title": "GLP-1 TRACKER",
+  "app.subtitle": "ULTRA GOLD + MENSTRUAL CYCLE + ACTION",
+
+  "more.title": "Více",
+
+  "settings.title": "Nastavení",
+  "settings.theme": "Vzhled",
+  "settings.theme.subtitle": "Vyber tmavý, světlý nebo systémový režim",
+  "settings.gender": "Režim",
+  "settings.gender.subtitle": "Změní barevné akcenty aplikace",
+  "settings.language": "Jazyk",
+  "settings.language.subtitle": "Vyber jazyk aplikace",
+
+  "about.title": "O aplikaci",
+  "about.subtitle": "Zdraví pod kontrolou • 2026",
+
+  "bloom.confirmed": "POTVRZENO",
+  "bloom.tomorrow": "ZÍTRA",
+  "bloom.apply": "APLIKOVAT",
+  "bloom.confirmButton": "Potvrdit",
+  "bloom.dayLabel": "{day}. DEN ({phase})",
+
+  "mood.rest": "ODPOČÍVEJ",
+  "mood.calm": "KLIDNĚJI",
+  "mood.balance": "ROVNOVÁHA",
+  "mood.bloom": "ROZKVÉTÁŠ",
+  "mood.shine": "ZÁŘÍŠ",
+  "mood.status": "STATUS",
+
+  "cycle.menstruation": "MENSTRUACE",
+  "cycle.follicular": "FOLIKULÁRNÍ",
+  "cycle.ovulation": "OVULACE",
+  "cycle.luteal": "LUTEÁLNÍ",
+
+  "demo.woman": "🌸 Žena",
+  "demo.man": "⚡ Muž",
+  "demo.protein": "Protein: {g}g",
+  "demo.water": "Voda: {n}",
+  "demo.injection": "Injekce za: {d} dny (nastav 0 pro test tlačítka)",
+  "demo.cycle": "Cyklus: {d}. den",
+  "demo.mood": "Nálada (1-5):",
+
+"settings.theme.system": "Systém",
+"settings.theme.light": "Světlý",
+"settings.theme.dark": "Tmavý",
+
+"settings.gender.woman": "Žena",
+"settings.gender.man": "Muž",
+
+"language.cs": "Čeština",
+"language.en": "English",
+
+"tab.dashboard": "Přehled",
+"tab.diary": "Deník",
+"tab.core": "Core",
+"tab.community": "Komunita",
+"tab.more": "Více"
+}

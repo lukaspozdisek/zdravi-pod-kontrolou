@@ -1,51 +1,87 @@
-// lib/l10n/app_localizations.dart
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import 'app_strings.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+/// JSON-based localizations
+/// Assets:
+///   assets/i18n/cs.json
+///   assets/i18n/en.json
 class AppLocalizations {
   final Locale locale;
-  AppLocalizations(this.locale);
+  final Map<String, String> _strings;
+  final Map<String, String> _fallback;
+
+  AppLocalizations._(this.locale, this._strings, this._fallback);
+
+  static const supportedLocales = <Locale>[
+    Locale('cs'),
+    Locale('en'),
+  ];
+
+  static const fallbackLocale = Locale('en');
 
   static AppLocalizations of(BuildContext context) {
-    final value = Localizations.of<AppLocalizations>(context, AppLocalizations);
-    assert(value != null, 'AppLocalizations not found in context');
-    return value!;
+    final loc = Localizations.of<AppLocalizations>(context, AppLocalizations);
+    assert(loc != null, 'AppLocalizations not found in context');
+    return loc!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocDelegate();
+  /// Translate key with optional {param} substitutions.
+  /// Example JSON: "hello": "Hello {name}"
+  String tr(String key, {Map<String, String>? params}) {
+    final raw = _strings[key] ?? _fallback[key] ?? key;
 
-  static List<Locale> supportedLocales = kSupportedLocales.map((e) => Locale(e)).toList();
+    if (params == null || params.isEmpty) return raw;
 
-  String tr(String key, {Map<String, String> args = const {}}) {
-    final lang = locale.languageCode;
-    final table = kStrings[lang] ?? kStrings['en']!;
-    var text = table[key] ?? kStrings['en']![key] ?? key;
+    var out = raw;
+    params.forEach((k, v) => out = out.replaceAll('{$k}', v));
+    return out;
+  }
 
-    // simple template replace: {x}
-    args.forEach((k, v) {
-      text = text.replaceAll('{$k}', v);
-    });
-    return text;
+  static Future<Map<String, String>> _load(Locale l) async {
+    final path = 'assets/i18n/${l.languageCode}.json';
+    final s = await rootBundle.loadString(path);
+    final Map<String, dynamic> m = json.decode(s) as Map<String, dynamic>;
+    return m.map((k, v) => MapEntry(k, v.toString()));
+  }
+
+  static Future<AppLocalizations> load(Locale locale) async {
+    // Always load fallback first (guaranteed base coverage)
+    final fallback = await _load(fallbackLocale);
+
+    Map<String, String> strings;
+    try {
+      strings = await _load(locale);
+    } catch (_) {
+      // Missing/invalid locale file -> fallback
+      strings = fallback;
+    }
+
+    return AppLocalizations._(locale, strings, fallback);
   }
 }
 
-class _AppLocDelegate extends LocalizationsDelegate<AppLocalizations> {
-  const _AppLocDelegate();
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  const AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => kSupportedLocales.contains(locale.languageCode);
+  bool isSupported(Locale locale) => AppLocalizations.supportedLocales
+      .any((l) => l.languageCode == locale.languageCode);
 
   @override
-  Future<AppLocalizations> load(Locale locale) async {
-    return SynchronousFuture<AppLocalizations>(AppLocalizations(locale));
-  }
+  Future<AppLocalizations> load(Locale locale) => AppLocalizations.load(locale);
 
   @override
-  bool shouldReload(_AppLocDelegate old) => false;
+  bool shouldReload(LocalizationsDelegate<AppLocalizations> old) => false;
 }
 
-/// helper: t(context, 'key', args: {...})
-String t(BuildContext context, String key, {Map<String, String> args = const {}}) {
-  return AppLocalizations.of(context).tr(key, args: args);
+/// Sugar: context.tr('key')
+extension TrContextX on BuildContext {
+  String tr(String key, {Map<String, String>? params}) =>
+      AppLocalizations.of(this).tr(key, params: params);
+}
+
+/// Back-compat helper if your UI uses: t(context, 'key')
+String t(BuildContext context, String key, {Map<String, String>? params}) {
+  return AppLocalizations.of(context).tr(key, params: params);
 }

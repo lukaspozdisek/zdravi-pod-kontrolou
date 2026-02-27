@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:convex_flutter/convex_flutter.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:zdravi_pod_kontrolou/core/app_settings.dart';
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
@@ -25,7 +26,7 @@ Future<void> main() async {
     ),
   );
 
-  // 🔥 Načtení uložených settings
+  // Load saved settings (theme / gender / locale)
   final settings = AppSettings();
   await settings.load();
 
@@ -47,16 +48,16 @@ class SunApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
 
-            // 🔥 THEME
+            // THEME
             theme: SunTheme.light(settings.genderMode),
             darkTheme: SunTheme.dark(settings.genderMode),
             themeMode: settings.themeMode,
 
-            // 🔥 LOCALE
+            // LOCALE
             locale: settings.locale,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [
-              AppLocalizations.delegate,
+              AppLocalizationsDelegate(),
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
@@ -91,6 +92,7 @@ class _SunShellState extends State<SunShell> {
     final settings = AppScope.of(context);
 
     return Scaffold(
+      extendBody: true, // ✅ body nebude "ořezané" průhledným bottom barem
       body: IndexedStack(
         index: index,
         children: const [
@@ -113,5 +115,6 @@ class _SunShellState extends State<SunShell> {
         ),
       ),
     );
+    ;
   }
 }

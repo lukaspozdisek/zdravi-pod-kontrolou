@@ -3,6 +3,7 @@ import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 // =========================
 // Premium Pill Tabs (Daily / Weekly / Stats)

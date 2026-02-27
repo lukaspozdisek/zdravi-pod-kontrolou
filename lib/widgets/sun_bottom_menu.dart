@@ -1,91 +1,124 @@
 import 'package:flutter/material.dart';
+
 import '../theme/sun_theme.dart';
 import '../core/sun_gender_mode.dart';
+import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../theme/sun_icons.dart';
 
 class SunBottomMenu extends StatelessWidget {
   final int index;
   final ValueChanged<int> onChanged;
   final SunGenderMode genderMode;
+  final String logoAssetPath;
 
   const SunBottomMenu({
     super.key,
     required this.index,
     required this.onChanged,
     required this.genderMode,
+    this.logoAssetPath = 'assets/branding/logo.png',
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final b = theme.brightness;
+    final isDark = b == Brightness.dark;
 
     final accent = SunTheme.accent(genderMode, b);
 
-    final menuBg = (b == Brightness.dark)
-        ? (theme.bottomNavigationBarTheme.backgroundColor ??
-            const Color(0xFF11111E))
-        : (theme.bottomNavigationBarTheme.backgroundColor ??
-            theme.colorScheme.surface);
+    // ✅ exactly: dark black, light white (no opacity)
+    final barBg = isDark ? Colors.black : Colors.white;
 
-    final outerBorder = (b == Brightness.dark)
-        ? Colors.white.withOpacity(0.08)
-        : Colors.black.withOpacity(0.08);
+    // keep stroke/shadow tokens if you want “card” look
+    final borderColor = SunTheme.surfaceStroke(genderMode, b);
+    final shadows = SunTheme.surfaceShadow(genderMode, b);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: menuBg,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: outerBorder, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(b == Brightness.dark ? 0.25 : 0.10),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Row(
+    final activeText = theme.textTheme.bodyMedium?.color ??
+        (isDark ? Colors.white : Colors.black);
+
+    final mutedText = theme.textTheme.bodySmall?.color ??
+        (isDark ? Colors.white70 : Colors.black54);
+
+    final mutedIcon = mutedText;
+
+    return SizedBox(
+      height: 96,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.bottomCenter,
         children: [
-          _Item(
-            active: index == 0,
-            label: 'Přehled',
-            icon: Icons.dashboard_rounded,
-            accent: accent,
-            brightness: b,
-            onTap: () => onChanged(0),
+          // ===== BAR =====
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: 76,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: BoxDecoration(
+                color: barBg,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: borderColor, width: 1),
+                boxShadow: shadows,
+              ),
+              child: Row(
+                children: [
+                  _NavItem(
+                    active: index == 0,
+                    label: context.tr('tab.dashboard'),
+                    icon: SunIcons.dashboard(index == 0),
+                    accent: accent,
+                    activeText: activeText,
+                    mutedIcon: mutedIcon,
+                    mutedText: mutedText,
+                    onTap: () => onChanged(0),
+                  ),
+                  _NavItem(
+                    active: index == 1,
+                    label: context.tr('tab.diary'),
+                    icon: SunIcons.diary(index == 1),
+                    accent: accent,
+                    activeText: activeText,
+                    mutedIcon: mutedIcon,
+                    mutedText: mutedText,
+                    onTap: () => onChanged(1),
+                  ),
+                  const SizedBox(width: 126),
+                  _NavItem(
+                    active: index == 3,
+                    label: context.tr('tab.community'),
+                    icon: SunIcons.community(index == 3),
+                    accent: accent,
+                    activeText: activeText,
+                    mutedIcon: mutedIcon,
+                    mutedText: mutedText,
+                    onTap: () => onChanged(3),
+                  ),
+                  _NavItem(
+                    active: index == 4,
+                    label: context.tr('tab.more'),
+                    icon: SunIcons.more(index == 4),
+                    accent: accent,
+                    activeText: activeText,
+                    mutedIcon: mutedIcon,
+                    mutedText: mutedText,
+                    onTap: () => onChanged(4),
+                  ),
+                ],
+              ),
+            ),
           ),
-          _Item(
-            active: index == 1,
-            label: 'Deník',
-            icon: Icons.book_rounded,
-            accent: accent,
-            brightness: b,
-            onTap: () => onChanged(1),
-          ),
-          _Item(
-            active: index == 2,
-            label: 'Core',
-            icon: Icons.favorite_rounded,
-            accent: accent,
-            brightness: b,
-            onTap: () => onChanged(2),
-          ),
-          _Item(
-            active: index == 3,
-            label: 'Komunita',
-            icon: Icons.people_alt_rounded,
-            accent: accent,
-            brightness: b,
-            onTap: () => onChanged(3),
-          ),
-          _Item(
-            active: index == 4,
-            label: 'More',
-            icon: Icons.more_horiz_rounded,
-            accent: accent,
-            brightness: b,
-            onTap: () => onChanged(4),
+
+          // ===== FLOATING LOGO (transparent always) =====
+          Positioned(
+            top: -20,
+            child: _CenterLogoOnly(
+              active: index == 2,
+              assetPath: logoAssetPath,
+              onTap: () => onChanged(2),
+            ),
           ),
         ],
       ),
@@ -93,69 +126,99 @@ class SunBottomMenu extends StatelessWidget {
   }
 }
 
-class _Item extends StatelessWidget {
+class _NavItem extends StatelessWidget {
   final bool active;
   final String label;
-  final IconData icon;
+  final PhosphorIconData icon;
+
   final Color accent;
-  final Brightness brightness;
+  final Color activeText;
+  final Color mutedIcon;
+  final Color mutedText;
+
   final VoidCallback onTap;
 
-  const _Item({
+  const _NavItem({
     required this.active,
     required this.label,
     required this.icon,
     required this.accent,
-    required this.brightness,
+    required this.activeText,
+    required this.mutedIcon,
+    required this.mutedText,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final activeBg = (brightness == Brightness.dark)
-        ? const Color(0xFF080808)
-        : Colors.white;
-
-    final inactiveColor = (brightness == Brightness.dark)
-        ? Colors.white.withOpacity(0.60)
-        : Colors.black.withOpacity(0.55);
-
-    final activeColor = accent;
-
+    // ✅ Variant A: no background, no border for active state
     return Expanded(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(22),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOut,
-            height: 56,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            decoration: BoxDecoration(
-              color: active ? activeBg : Colors.transparent,
-              borderRadius: BorderRadius.circular(22),
-              border: active ? Border.all(color: accent, width: 1.4) : null,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon,
-                    size: 22, color: active ? activeColor : inactiveColor),
-                const SizedBox(height: 4),
-                Text(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PhosphorIcon(
+                icon,
+                size: 20,
+                color: active ? accent : mutedIcon,
+              ),
+              const SizedBox(height: 2),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
                   label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: active ? FontWeight.w700 : FontWeight.w600,
-                    color: active ? activeColor : inactiveColor,
-                    letterSpacing: 0.2,
+                    fontSize: 10.5,
+                    fontWeight: active ? FontWeight.w800 : FontWeight.w700,
+                    color: active ? activeText : mutedText,
+                    height: 1.0,
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CenterLogoOnly extends StatelessWidget {
+  final bool active;
+  final String assetPath;
+  final VoidCallback onTap;
+
+  const _CenterLogoOnly({
+    required this.active,
+    required this.assetPath,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = active ? 1.05 : 1.00;
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: AnimatedScale(
+        scale: scale,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        child: SizedBox(
+          width: 140,
+          height: 140,
+          child: Center(
+            child: Image.asset(
+              assetPath,
+              width: 120,
+              height: 120,
+              fit: BoxFit.contain,
             ),
           ),
         ),

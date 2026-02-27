@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SunSectionCarousel extends StatefulWidget {
   /// 3 items visible + halves on both sides

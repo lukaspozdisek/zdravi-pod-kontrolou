@@ -4,6 +4,7 @@ import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart'; // není nutné
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
 import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /* ----------------------------- helpers ----------------------------- */
 
@@ -51,7 +52,6 @@ class _GLP1DemoScreenState extends State<GLP1DemoScreen> {
     final settings = AppScope.of(context);
     final isWoman = settings.genderMode == SunGenderMode.woman;
     return Scaffold(
-      backgroundColor: const Color(0xFF050505),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

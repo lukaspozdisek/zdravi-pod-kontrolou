@@ -7,6 +7,7 @@ import 'package:zdravi_pod_kontrolou/widgets/controls/sun_pill_tabs.dart';
 import 'package:zdravi_pod_kontrolou/widgets/sections/sun_section_carousel.dart';
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
 import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -33,8 +34,6 @@ class _DashboardPageState extends State<DashboardPage> {
     final text = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white;
     final muted =
         Theme.of(context).textTheme.bodySmall?.color ?? Colors.white70;
-
-    final bg = SunTheme.backgroundGradient(genderMode, brightness);
 
     // Demo data (jen pro vizuál)
     final kcalLine = <double>[
@@ -106,17 +105,15 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: bg,
-          ),
-        ),
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SafeArea(
+          bottom: false, // ✅ důležité: neodsazuj odspodu (menu to řeší)
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(
+                16, 16, 16, 6), // ✅ menší spodní mezera
             child: ListView(
+              padding:
+                  EdgeInsets.zero, // ✅ jistota, že ListView nepřidává nic navíc
               children: [
                 Text('Good afternoon, Lukas!',
                     style: Theme.of(context).textTheme.headlineSmall),

@@ -4,69 +4,75 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
 
 class SunColors {
-  // --- Woman palette ---
+  // =========================
+  // BRAND ACCENTS
+  // =========================
+
+  // Woman
   static const Color womanAccentDark = Color(0xFFFD00DD);
   static const Color womanAccentLight = Color(0xFFFD00DD);
   static const Color womanSecondaryDark = Color(0xFFFF66F0);
   static const Color womanSecondaryLight = Color(0xFFFF99F5);
 
-  // --- Man palette ---
+  // Man
   static const Color manAccentDark = Color(0xFF00BFFF);
   static const Color manAccentLight = Color(0xFF0284C7);
   static const Color manSecondaryDark = Color(0xFF38BDF8);
   static const Color manSecondaryLight = Color(0xFF3B82F6);
 
-  // Status
+  // =========================
+  // STATUS
+  // =========================
   static const Color success = Color(0xFF22C55E);
   static const Color warning = Color(0xFFF59E0B);
   static const Color danger = Color(0xFFEF4444);
 
-  // Dark neutrals
-  static const Color darkBg0 = Color(0xFF0B0B16);
-  static const Color darkSurface = Color(0xFF121220);
-  static const Color darkCard = Color(0xFF141428);
-  static const Color darkText = Color(0xFFEDEDF7);
-  static const Color darkMuted = Color(0xFF9CA3AF);
-
-  // Light neutrals
-  static const Color lightBg = Color(0xFFF6F7FB);
-  static const Color lightSurface = Colors.white;
-  static const Color lightCard = Colors.white;
-  static const Color lightText = Color(0xFF111827);
-  static const Color lightMuted = Color(0xFF6B7280);
-  static const Color womanBgDark1 = Color(0xFF1B0B5F); // purple
-  static const Color manBgDark1 = Color(0xFF071A2F); // deep blue
-
-  static const Color womanBgLight1 = Color(0xFFFCE7F3); // soft pink tint
-  static const Color manBgLight1 = Color(0xFFE0F2FE); // soft blue tint
-
   // =========================
-  // Apple-like gender tokens
+  // GLOBAL NEUTRALS (PRO LOOK)
   // =========================
 
-  // MAN tokens
+  // Dark – premium neutral (no tint)
+  static const Color darkBg0 = Color(0xFF0B0F14);
+  static const Color darkSurface = Color(0xFF111827);
+  static const Color darkCard = Color(0xFF050505);
+  static const Color darkText = Color(0xFFE6EDF6);
+  static const Color darkMuted = Color(0xFF94A3B8);
+
+  // Light – clean minimal
+  static const Color lightBg = Color(0xFFF5F7FB);
+  static const Color lightSurface = Color(0xFFFFFFFF);
+  static const Color lightCard = Color(0xFFFFFFFF);
+  static const Color lightText = Color(0xFF0F172A);
+  static const Color lightMuted = Color(0xFF64748B);
+
+  // =========================
+  // BACKGROUND TOKENS
+  // =========================
+  // Stejný styl pro man i woman → jen jemný rozdíl tónu
+
+  // MAN
   static const Color manBgLight = Color(0xFFF6FBFF);
-  static const Color manBgTintLight = Color(0xFFEFF9FF);
-  static const Color manBgDark = Color(0xFF070B12);
-  static const Color manBgTintDark = Color(0xFF071C2D);
+  static const Color manBgTintLight = Color(0xFFEFF7FF);
+  static const Color manBgDark = Color(0xFF0A0F17);
+  static const Color manBgTintDark = Color(0xFF0D1623);
 
   static const Color manCardLight = Color(0xFFFFFFFF);
-  static const Color manCardDark = Color(0xFF101828);
+  static const Color manCardDark = Color(0xFF0F1722);
 
-  static const Color manStrokeLight = Color(0x14000000); // 8% black
-  static const Color manStrokeDark = Color(0x14FFFFFF); // 8% white
+  static const Color manStrokeLight = Color(0x14000000);
+  static const Color manStrokeDark = Color(0x14FFFFFF);
 
-  // WOMAN tokens
-  static const Color womanBgLight = Color(0xFFFFF6FD);
-  static const Color womanBgTintLight = Color(0xFFFFEAF8);
-  static const Color womanBgDark = Color(0xFF0A0710);
-  static const Color womanBgTintDark = Color(0xFF2A0F2A);
+  // WOMAN (stejně čisté, žádná fialová mlha)
+  static const Color womanBgLight = Color(0xFFFFFBFE);
+  static const Color womanBgTintLight = Color(0xFFFFF4FB);
+  static const Color womanBgDark = Color(0xFF0A0F17);
+  static const Color womanBgTintDark = Color(0xFF14121A);
 
   static const Color womanCardLight = Color(0xFFFFFFFF);
-  static const Color womanCardDark = Color(0xFF181020);
+  static const Color womanCardDark = Color(0xFF14141F);
 
-  static const Color womanStrokeLight = Color(0x14000000); // 8% black
-  static const Color womanStrokeDark = Color(0x14FFFFFF); // 8% white
+  static const Color womanStrokeLight = Color(0x14000000);
+  static const Color womanStrokeDark = Color(0x14FFFFFF);
 }
 
 class SunTheme {
@@ -161,7 +167,7 @@ class SunTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: cs,
-      scaffoldBackgroundColor: SunColors.darkBg0,
+      scaffoldBackgroundColor: SunColors.darkCard, // pozadí celé aplikace
       cardColor: SunColors.darkCard,
       dividerColor: Colors.white10,
       splashFactory: InkSparkle.splashFactory,
@@ -212,7 +218,7 @@ class SunTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: const Color(0xFF11111E),
+        backgroundColor: Colors.black, // pozadi spodni menu
         selectedItemColor: primary,
         unselectedItemColor: SunColors.darkMuted,
         type: BottomNavigationBarType.fixed,
@@ -241,7 +247,7 @@ class SunTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: cs,
-      scaffoldBackgroundColor: SunColors.lightBg,
+      scaffoldBackgroundColor: SunColors.lightCard, // pozadí celeé aplikace
       cardColor: SunColors.lightCard,
       dividerColor: const Color(0xFFE9EBF3),
       splashFactory: InkSparkle.splashFactory,

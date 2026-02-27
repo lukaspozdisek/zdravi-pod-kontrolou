@@ -4,6 +4,7 @@ import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
 import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
 import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
 import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
@@ -14,30 +15,22 @@ class MorePage extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     final gender = settings.genderMode;
 
-    final bg = SunTheme.backgroundGradient(gender, brightness);
+    color:
+    Theme.of(context).scaffoldBackgroundColor;
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(t(context, 'more.title')),
+        title: Text(context.tr('more.title')),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: bg,
-          ),
-        ),
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-            children: [
-              _SettingsCard(colorScheme: cs),
-              const SizedBox(height: 14),
-              _AboutCard(colorScheme: cs),
-            ],
-          ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+          children: [
+            _SettingsCard(colorScheme: cs),
+            const SizedBox(height: 14),
+            _AboutCard(colorScheme: cs),
+          ],
         ),
       ),
     );
@@ -107,7 +100,11 @@ class _SettingsCard extends StatelessWidget {
           _Segment(
             accent: accent,
             isDark: isDark,
-            labels: const ['System', 'Light', 'Dark'],
+            labels: [
+              t(context, 'settings.theme.system'),
+              t(context, 'settings.theme.light'),
+              t(context, 'settings.theme.dark'),
+            ],
             selectedIndex: themeMode == ThemeMode.system
                 ? 0
                 : themeMode == ThemeMode.light
@@ -132,7 +129,10 @@ class _SettingsCard extends StatelessWidget {
           _Segment(
             accent: accent,
             isDark: isDark,
-            labels: const ['Woman', 'Man'],
+            labels: [
+              t(context, 'settings.gender.woman'),
+              t(context, 'settings.gender.man'),
+            ],
             selectedIndex: gender == SunGenderMode.woman ? 0 : 1,
             onChanged: (i) {
               settings.setGenderMode(
@@ -153,9 +153,15 @@ class _SettingsCard extends StatelessWidget {
             isDark: isDark,
             accent: accent,
             value: lang,
-            items: const [
-              DropdownMenuItem(value: 'cs', child: Text('Čeština')),
-              DropdownMenuItem(value: 'en', child: Text('English')),
+            items: [
+              DropdownMenuItem(
+                value: 'cs',
+                child: Text(t(context, 'language.cs')),
+              ),
+              DropdownMenuItem(
+                value: 'en',
+                child: Text(t(context, 'language.en')),
+              ),
             ],
             onChanged: (v) {
               if (v == null) return;
