@@ -55,5 +55,86 @@
 "tab.diary": "Diary",
 "tab.core": "Core",
 "tab.community": "Community",
-"tab.more": "More"
+"tab.more": "More",
+
+  "dashboard.section.core": "Core",
+  "dashboard.section.diary": "Diary",
+  "dashboard.section.food": "Food",
+  "dashboard.section.body": "Body",
+  "dashboard.section.chat": "Chat",
+
+  "drawer.toggleTheme": "Toggle theme",
+  "drawer.switchToMan": "Switch to Man",
+  "drawer.switchToWoman": "Switch to Woman",
+
+  "drawer.core.overview": "Overview",
+  "drawer.core.goals": "Goals",
+  "drawer.core.insights": "Insights",
+
+  "drawer.diary.addEntry": "Add entry",
+  "drawer.diary.history": "History",
+  "drawer.diary.templates": "Templates",
+
+  "drawer.food.addFood": "Add food",
+  "drawer.food.scan": "Scan",
+  "drawer.food.favorites": "Favorites",
+
+  "drawer.body.measurements": "Measurements",
+  "drawer.body.progress": "Progress",
+  "drawer.body.photos": "Photos",
+
+  "drawer.chat.newChat": "New chat",
+  "drawer.chat.coach": "Coach",
+  "drawer.chat.saved": "Saved",
+
+  "drawer.community.groups": "Groups",
+  "drawer.community.chat": "Chat",
+  "drawer.community.events": "Events",
+  "drawer.community.members": "Members",
+
+  "drawer.more.profile": "Profile",
+  "drawer.more.settings": "Settings",
+    "drawer.more.about": "About",
+    "tab.food": "Food",
+  "tab.body": "Body",
+  "tab.chat": "Chat",
+
+  "dashboard.greeting": "Good afternoon, {name}!",
+  "dashboard.subtitle": "Your day at a glance",
+  "dashboard.pill.daily": "Daily",
+  "dashboard.pill.weekly": "Weekly",
+  "dashboard.pill.stats": "Stats",
+
+  "dashboard.kcal": "kcal",
+  "dashboard.stat.protein": "Protein",
+  "dashboard.stat.carbs": "Carbs",
+  "dashboard.stat.fiber": "Fiber",
+  "dashboard.stat.fat": "Fat",
+  "dashboard.value.grams": "{g} g",
+
+  "dashboard.chip.water": "Water {cur}/{goal}",
+  "dashboard.chip.injectionIn": "Injection in {d}d",
+  "dashboard.chip.mood": "Mood: {value}",
+
+  "dashboard.energyToday": "Energy today",
+  "dashboard.energyRange": "09:00  →  21:00",
+
+  "dashboard.action.addFood": "Add food",
+  "dashboard.action.scan": "Scan",
+  "dashboard.action.saveMood": "Save mood",
+
+  "dashboard.macros": "Macros",
+  "dashboard.macrosFooter": "Protein / Carbs / Fat",
+
+  "dashboard.thisWeek": "This week",
+  "dashboard.weekdaysShort": "Mon  Tue  Wed  Thu  Fri  Sat  Sun",
+  "dashboard.goalKcalPerDay": "Goal: {kcal} kcal/day",
+
+  "dashboard.moodQuestion": "How do you feel today?",
+  "dashboard.mood.great": "Great",
+  "dashboard.mood.good": "Good",
+  "dashboard.mood.neutral": "Neutral",
+  "dashboard.mood.tired": "Tired",
+  "dashboard.mood.stressed": "Stressed"
+
 }

@@ -1,23 +1,28 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
-import 'package:zdravi_pod_kontrolou/widgets/sun_bottom_menu.dart';
 import 'package:zdravi_pod_kontrolou/widgets/controls/sun_gradient_button.dart';
 import 'package:zdravi_pod_kontrolou/widgets/controls/sun_pill_tabs.dart';
 import 'package:zdravi_pod_kontrolou/widgets/sections/sun_section_carousel.dart';
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
 import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final int sectionIndex;
+  final ValueChanged<int> onSectionChanged;
+
+  const DashboardPage({
+    super.key,
+    required this.sectionIndex,
+    required this.onSectionChanged,
+  });
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  int sectionIndex = 1;
   int pillIndex = 0;
 
   @override
@@ -28,8 +33,8 @@ class _DashboardPageState extends State<DashboardPage> {
     final brightness = Theme.of(context).brightness;
     final cs = Theme.of(context).colorScheme;
 
-    final accent = cs.primary; // global accent from theme
-    final secondary = cs.secondary; // global secondary from theme
+    final accent = cs.primary;
+    final secondary = cs.secondary;
 
     final text = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white;
     final muted =
@@ -50,338 +55,314 @@ class _DashboardPageState extends State<DashboardPage> {
       980
     ];
     final weeklyKcal = <double>[1400, 1550, 1200, 1700, 1500, 1320, 980];
-    final macros =
-        _MacroData(protein: 78, carbs: 65, fat: 42); // fat jen pro vizuál
+    final macros = _MacroData(protein: 78, carbs: 65, fat: 42);
 
-    return Scaffold(
-      drawer: Drawer(
-        child: SafeArea(
-          child: Column(
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
+          child: ListView(
+            padding: EdgeInsets.zero,
             children: [
-              const SizedBox(height: 24),
-              const Text(
-                'Menu',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                context.tr('dashboard.greeting', params: {'name': 'Lukas'}),
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-              const SizedBox(height: 24),
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Profil'),
-                onTap: () {},
+              const SizedBox(height: 6),
+              Text(
+                context.tr('dashboard.subtitle'),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Nastavení'),
-                onTap: () {},
+              const SizedBox(height: 14),
+
+              // TOP CIRCULAR MENU
+              SunSectionCarousel(
+                items: [
+                  SunSectionMenuItem(
+                      label: context.tr('tab.core'), icon: Icons.home_rounded),
+                  SunSectionMenuItem(
+                      label: context.tr('tab.diary'), icon: Icons.book_rounded),
+                  SunSectionMenuItem(
+                      label: context.tr('tab.food'),
+                      icon: Icons.restaurant_rounded),
+                  SunSectionMenuItem(
+                      label: context.tr('tab.body'),
+                      icon: Icons.fitness_center_rounded),
+                  SunSectionMenuItem(
+                      label: context.tr('tab.chat'), icon: Icons.forum_rounded),
+                ],
+                index: widget.sectionIndex,
+                onChanged: widget.onSectionChanged,
               ),
-              ListTile(
-                leading: const Icon(Icons.info),
-                title: const Text('Info'),
-                onTap: () {},
+
+              const SizedBox(height: 12),
+
+              // PILL SWITCH
+              SunPillTabs(
+                items: [
+                  context.tr('dashboard.pill.daily'),
+                  context.tr('dashboard.pill.weekly'),
+                  context.tr('dashboard.pill.stats'),
+                ],
+                index: pillIndex,
+                onChanged: (i) => setState(() => pillIndex = i),
+              ),
+
+              const SizedBox(height: 12),
+              _RowGenderSwitch(
+                mode: genderMode,
+                accent: accent,
+                onChanged: settings.setGenderMode,
+              ),
+              const SizedBox(height: 16),
+
+              // MAIN SUMMARY CARD
+              _GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _Ring(
+                          size: 112,
+                          progress: 0.62,
+                          accent: accent,
+                          labelTop: '980',
+                          labelBottom: context.tr('dashboard.kcal'),
+                          textColor: text,
+                          mutedColor: muted,
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _StatLine(
+                                label: context.tr('dashboard.stat.protein'),
+                                value: context.tr('dashboard.value.grams',
+                                    params: {'g': '78'}),
+                                color: accent,
+                                muted: muted,
+                              ),
+                              _StatLine(
+                                label: context.tr('dashboard.stat.carbs'),
+                                value: context.tr('dashboard.value.grams',
+                                    params: {'g': '65'}),
+                                color: secondary,
+                                muted: muted,
+                              ),
+                              _StatLine(
+                                label: context.tr('dashboard.stat.fiber'),
+                                value: context.tr('dashboard.value.grams',
+                                    params: {'g': '22'}),
+                                color: SunColors.success,
+                                muted: muted,
+                              ),
+                              const SizedBox(height: 10),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  _Chip(
+                                    text: context.tr('dashboard.chip.water',
+                                        params: {'cur': '4', 'goal': '8'}),
+                                    icon: Icons.water_drop,
+                                    color: secondary,
+                                  ),
+                                  _Chip(
+                                    text: context.tr(
+                                        'dashboard.chip.injectionIn',
+                                        params: {'d': '2'}),
+                                    icon: Icons.vaccines,
+                                    color: accent,
+                                  ),
+                                  _Chip(
+                                    text: context
+                                        .tr('dashboard.chip.mood', params: {
+                                      'value': context.tr('dashboard.mood.good')
+                                    }),
+                                    icon: Icons.emoji_emotions,
+                                    color: accent,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Divider(color: Theme.of(context).dividerColor),
+                    const SizedBox(height: 12),
+                    Text(
+                      context.tr('dashboard.energyToday'),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 10),
+                    _GlassChartContainer(
+                      child: _LineChart(
+                        values: kcalLine,
+                        lineColor: accent,
+                        gridColor: Theme.of(context).dividerColor,
+                        textColor: muted,
+                        footerText: context.tr('dashboard.energyRange'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SunGradientButton(
+                            label: context.tr('dashboard.action.addFood'),
+                            icon: Icons.restaurant,
+                            gradient: SunTheme.brandGradient70_30(genderMode),
+                            onPressed: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        _SquareAction(
+                          icon: Icons.qr_code_scanner,
+                          label: context.tr('dashboard.action.scan'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // MACROS CARD
+              _GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.tr('dashboard.macros'),
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 10),
+                    _GlassChartContainer(
+                      child: _StackedMacroBar(
+                        data: macros,
+                        proteinColor: accent,
+                        carbsColor: secondary,
+                        fatColor: SunColors.warning,
+                        textColor: muted,
+                        gridColor: Theme.of(context).dividerColor,
+                        footerText: context.tr('dashboard.macrosFooter'),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _MiniMetric(
+                            label: context.tr('dashboard.stat.protein'),
+                            value: context.tr('dashboard.value.grams',
+                                params: {'g': '${macros.protein}'}),
+                            color: accent,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _MiniMetric(
+                            label: context.tr('dashboard.stat.carbs'),
+                            value: context.tr('dashboard.value.grams',
+                                params: {'g': '${macros.carbs}'}),
+                            color: secondary,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _MiniMetric(
+                            label: context.tr('dashboard.stat.fat'),
+                            value: context.tr('dashboard.value.grams',
+                                params: {'g': '${macros.fat}'}),
+                            color: SunColors.warning,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // WEEKLY CARD
+              _GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.tr('dashboard.thisWeek'),
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 10),
+                    _GlassChartContainer(
+                      child: _WeeklyBars(
+                        values: weeklyKcal,
+                        barColor: accent,
+                        textColor: muted,
+                        gridColor: Theme.of(context).dividerColor,
+                        footerText: context.tr('dashboard.weekdaysShort'),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      context.tr('dashboard.goalKcalPerDay',
+                          params: {'kcal': '1500'}),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // MOOD CARD
+              _GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.tr('dashboard.moodQuestion'),
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        _MoodTile(
+                            emoji: '😊',
+                            label: context.tr('dashboard.mood.great')),
+                        _MoodTile(
+                            emoji: '🙂',
+                            label: context.tr('dashboard.mood.good')),
+                        _MoodTile(
+                            emoji: '😐',
+                            label: context.tr('dashboard.mood.neutral')),
+                        _MoodTile(
+                            emoji: '😴',
+                            label: context.tr('dashboard.mood.tired')),
+                        _MoodTile(
+                            emoji: '😣',
+                            label: context.tr('dashboard.mood.stressed')),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SunGradientButton(
+                        label: context.tr('dashboard.action.saveMood'),
+                        icon: Icons.save,
+                        gradient: SunTheme.brandGradient70_30(genderMode),
+                        onPressed: () {},
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
-          ),
-        ),
-      ),
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        title: const SizedBox(),
-        actions: [
-          IconButton(
-            onPressed: settings.toggleThemeLightDark,
-            icon: Icon(
-              brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            tooltip: 'Toggle theme',
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: SafeArea(
-          bottom: false, // ✅ důležité: neodsazuj odspodu (menu to řeší)
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-                16, 16, 16, 6), // ✅ menší spodní mezera
-            child: ListView(
-              padding:
-                  EdgeInsets.zero, // ✅ jistota, že ListView nepřidává nic navíc
-              children: [
-                Text('Good afternoon, Lukas!',
-                    style: Theme.of(context).textTheme.headlineSmall),
-                const SizedBox(height: 6),
-                Text('Your day at a glance',
-                    style: Theme.of(context).textTheme.bodySmall),
-
-                const SizedBox(height: 14),
-
-// ======================
-// TOP CIRCULAR MENU (section carousel)
-// ======================
-                SunSectionCarousel(
-                  items: const [
-                    SunSectionMenuItem(label: 'Core', icon: Icons.home_rounded),
-                    SunSectionMenuItem(
-                        label: 'Diary', icon: Icons.book_rounded),
-                    SunSectionMenuItem(
-                        label: 'Food', icon: Icons.restaurant_rounded),
-                    SunSectionMenuItem(
-                        label: 'Body', icon: Icons.fitness_center_rounded),
-                    SunSectionMenuItem(
-                        label: 'Chat', icon: Icons.forum_rounded),
-                  ],
-                  index: sectionIndex,
-                  onChanged: (i) => setState(() => sectionIndex = i),
-                ),
-
-                const SizedBox(height: 12),
-
-// ======================
-// PILL SWITCH (Daily / Weekly / Stats)
-// ======================
-                SunPillTabs(
-                  items: const ['Daily', 'Weekly', 'Stats'],
-                  index: pillIndex,
-                  onChanged: (i) => setState(() => pillIndex = i),
-                ),
-
-                const SizedBox(height: 12),
-                _RowGenderSwitch(
-                  mode: genderMode,
-                  accent: accent,
-                  onChanged: settings.setGenderMode,
-                ),
-                const SizedBox(height: 16),
-
-                // ======================
-                // MAIN SUMMARY CARD
-                // ======================
-                _GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _Ring(
-                            size: 112,
-                            progress: 0.62,
-                            accent: accent,
-                            labelTop: '980',
-                            labelBottom: 'kcal',
-                            textColor: text,
-                            mutedColor: muted,
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _StatLine(
-                                    label: 'Protein',
-                                    value: '78 g',
-                                    color: accent,
-                                    muted: muted),
-                                _StatLine(
-                                    label: 'Carbs',
-                                    value: '65 g',
-                                    color: secondary,
-                                    muted: muted),
-                                _StatLine(
-                                    label: 'Fiber',
-                                    value: '22 g',
-                                    color: SunColors.success,
-                                    muted: muted),
-                                const SizedBox(height: 10),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    _Chip(
-                                        text: 'Water 4/8',
-                                        icon: Icons.water_drop,
-                                        color: secondary),
-                                    _Chip(
-                                        text: 'Injection in 2d',
-                                        icon: Icons.vaccines,
-                                        color: accent),
-                                    _Chip(
-                                        text: 'Mood: Good',
-                                        icon: Icons.emoji_emotions,
-                                        color: accent),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-
-                      const SizedBox(height: 14),
-                      Divider(color: Theme.of(context).dividerColor),
-
-                      const SizedBox(height: 12),
-                      Text('Energy today',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 10),
-
-                      // Line chart (kcal over day)
-                      _GlassChartContainer(
-                        child: _LineChart(
-                          values: kcalLine,
-                          lineColor: accent,
-                          gridColor: Theme.of(context).dividerColor,
-                          textColor: muted,
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SunGradientButton(
-                              label: 'Add food',
-                              icon: Icons.restaurant,
-                              gradient: SunTheme.brandGradient70_30(genderMode),
-                              onPressed: () {},
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          _SquareAction(
-                              icon: Icons.qr_code_scanner, label: 'Scan'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 14),
-
-                // ======================
-                // MACROS CARD
-                // ======================
-                _GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Macros',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 10),
-
-                      // Stacked bar
-                      _GlassChartContainer(
-                        child: _StackedMacroBar(
-                          data: macros,
-                          proteinColor: accent,
-                          carbsColor: secondary,
-                          fatColor: SunColors.warning,
-                          textColor: muted,
-                          gridColor: Theme.of(context).dividerColor,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      // quick macro pills
-                      Row(
-                        children: [
-                          Expanded(
-                              child: _MiniMetric(
-                                  label: 'Protein',
-                                  value: '${macros.protein}g',
-                                  color: accent)),
-                          const SizedBox(width: 8),
-                          Expanded(
-                              child: _MiniMetric(
-                                  label: 'Carbs',
-                                  value: '${macros.carbs}g',
-                                  color: secondary)),
-                          const SizedBox(width: 8),
-                          Expanded(
-                              child: _MiniMetric(
-                                  label: 'Fat',
-                                  value: '${macros.fat}g',
-                                  color: SunColors.warning)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 14),
-
-                // ======================
-                // WEEKLY CARD
-                // ======================
-                _GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('This week',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 10),
-                      _GlassChartContainer(
-                        child: _WeeklyBars(
-                          values: weeklyKcal,
-                          barColor: accent,
-                          accent: accent,
-                          textColor: muted,
-                          gridColor: Theme.of(context).dividerColor,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text('Goal: 1500 kcal/day',
-                          style: Theme.of(context).textTheme.bodySmall),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 14),
-
-                // ======================
-                // MOOD CARD
-                // ======================
-                _GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('How do you feel today?',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: const [
-                          _MoodTile(emoji: '😊', label: 'Great'),
-                          _MoodTile(emoji: '🙂', label: 'Good'),
-                          _MoodTile(emoji: '😐', label: 'Neutral'),
-                          _MoodTile(emoji: '😴', label: 'Tired'),
-                          _MoodTile(emoji: '😣', label: 'Stressed'),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: SunGradientButton(
-                          label: 'Save mood',
-                          icon: Icons.save,
-                          gradient: SunTheme.brandGradient70_30(genderMode),
-                          onPressed: () {},
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -701,13 +682,13 @@ class _RowGenderSwitch extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _SwitchItem(
-            label: 'Woman',
+            label: context.tr('settings.gender.woman'),
             selected: mode == SunGenderMode.woman,
             color: accent,
             onTap: () => onChanged(SunGenderMode.woman),
           ),
           _SwitchItem(
-            label: 'Man',
+            label: context.tr('settings.gender.man'),
             selected: mode == SunGenderMode.man,
             color: accent,
             onTap: () => onChanged(SunGenderMode.man),
@@ -764,26 +745,25 @@ class _LineChart extends StatelessWidget {
   final Color lineColor;
   final Color gridColor;
   final Color textColor;
+  final String footerText;
 
   const _LineChart({
     required this.values,
     required this.lineColor,
     required this.gridColor,
     required this.textColor,
+    required this.footerText,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _LineChartPainter(
-        values: values,
-        lineColor: lineColor,
-        gridColor: gridColor,
-      ),
+          values: values, lineColor: lineColor, gridColor: gridColor),
       child: Align(
         alignment: Alignment.bottomLeft,
-        child: Text('09:00  →  21:00',
-            style: TextStyle(fontSize: 11, color: textColor)),
+        child:
+            Text(footerText, style: TextStyle(fontSize: 11, color: textColor)),
       ),
     );
   }
@@ -805,7 +785,6 @@ class _LineChartPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // grid lines
     final gridPaint = Paint()
       ..color = gridColor.withOpacity(0.35)
       ..strokeWidth = 1;
@@ -827,13 +806,11 @@ class _LineChartPainter extends CustomPainter {
       return Offset(x, y);
     }
 
-    // line path
     final path = Path()..moveTo(p(0).dx, p(0).dy);
     for (int i = 1; i < values.length; i++) {
       path.lineTo(p(i).dx, p(i).dy);
     }
 
-    // stroke
     final linePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
@@ -843,14 +820,12 @@ class _LineChartPainter extends CustomPainter {
 
     canvas.drawPath(path, linePaint);
 
-    // dots
     final dotPaint = Paint()..color = lineColor;
     for (int i = 0; i < values.length; i++) {
       final pt = p(i);
       canvas.drawCircle(pt, 3.5, dotPaint);
     }
 
-    // subtle fill
     final fillPath = Path.from(path)
       ..lineTo(w, h)
       ..lineTo(0, h)
@@ -886,6 +861,7 @@ class _StackedMacroBar extends StatelessWidget {
   final Color fatColor;
   final Color textColor;
   final Color gridColor;
+  final String footerText;
 
   const _StackedMacroBar({
     required this.data,
@@ -894,6 +870,7 @@ class _StackedMacroBar extends StatelessWidget {
     required this.fatColor,
     required this.textColor,
     required this.gridColor,
+    required this.footerText,
   });
 
   @override
@@ -908,8 +885,8 @@ class _StackedMacroBar extends StatelessWidget {
       ),
       child: Align(
         alignment: Alignment.bottomLeft,
-        child: Text('Protein / Carbs / Fat',
-            style: TextStyle(fontSize: 11, color: textColor)),
+        child:
+            Text(footerText, style: TextStyle(fontSize: 11, color: textColor)),
       ),
     );
   }
@@ -935,7 +912,6 @@ class _StackedMacroBarPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // baseline grid
     final gridPaint = Paint()
       ..color = gridColor.withOpacity(0.35)
       ..strokeWidth = 1;
@@ -955,13 +931,8 @@ class _StackedMacroBarPainter extends CustomPainter {
       const Radius.circular(14),
     );
 
-    // background
-    canvas.drawRRect(
-      r,
-      Paint()..color = Colors.white.withOpacity(0.08),
-    );
+    canvas.drawRRect(r, Paint()..color = Colors.white.withOpacity(0.08));
 
-    // segments
     double x = 0;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -970,10 +941,8 @@ class _StackedMacroBarPainter extends CustomPainter {
     );
     x += pW;
 
-    canvas.drawRect(
-      Rect.fromLTWH(x, y, cW, barHeight),
-      Paint()..color = carbsColor.withOpacity(0.95),
-    );
+    canvas.drawRect(Rect.fromLTWH(x, y, cW, barHeight),
+        Paint()..color = carbsColor.withOpacity(0.95));
     x += cW;
 
     canvas.drawRRect(
@@ -990,30 +959,27 @@ class _StackedMacroBarPainter extends CustomPainter {
 class _WeeklyBars extends StatelessWidget {
   final List<double> values;
   final Color barColor;
-  final Color accent;
   final Color textColor;
   final Color gridColor;
+  final String footerText;
 
   const _WeeklyBars({
     required this.values,
     required this.barColor,
-    required this.accent,
     required this.textColor,
     required this.gridColor,
+    required this.footerText,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _WeeklyBarsPainter(
-        values: values,
-        barColor: barColor,
-        gridColor: gridColor,
-      ),
+          values: values, barColor: barColor, gridColor: gridColor),
       child: Align(
         alignment: Alignment.bottomLeft,
-        child: Text('Mon  Tue  Wed  Thu  Fri  Sat  Sun',
-            style: TextStyle(fontSize: 11, color: textColor)),
+        child:
+            Text(footerText, style: TextStyle(fontSize: 11, color: textColor)),
       ),
     );
   }
@@ -1024,18 +990,14 @@ class _WeeklyBarsPainter extends CustomPainter {
   final Color barColor;
   final Color gridColor;
 
-  _WeeklyBarsPainter({
-    required this.values,
-    required this.barColor,
-    required this.gridColor,
-  });
+  _WeeklyBarsPainter(
+      {required this.values, required this.barColor, required this.gridColor});
 
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
 
-    // grid
     final gridPaint = Paint()
       ..color = gridColor.withOpacity(0.35)
       ..strokeWidth = 1;

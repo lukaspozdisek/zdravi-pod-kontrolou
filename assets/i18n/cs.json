@@ -41,19 +41,99 @@
   "demo.cycle": "Cyklus: {d}. den",
   "demo.mood": "Nálada (1-5):",
 
-"settings.theme.system": "Systém",
-"settings.theme.light": "Světlý",
-"settings.theme.dark": "Tmavý",
+  "settings.theme.system": "Systém",
+  "settings.theme.light": "Světlý",
+  "settings.theme.dark": "Tmavý",
 
-"settings.gender.woman": "Žena",
-"settings.gender.man": "Muž",
+  "settings.gender.woman": "Žena",
+  "settings.gender.man": "Muž",
 
-"language.cs": "Čeština",
-"language.en": "English",
+  "language.cs": "Čeština",
+  "language.en": "English",
 
-"tab.dashboard": "Přehled",
-"tab.diary": "Deník",
-"tab.core": "Core",
-"tab.community": "Komunita",
-"tab.more": "Více"
+  "tab.dashboard": "Přehled",
+  "tab.diary": "Deník",
+  "tab.core": "Core",
+  "tab.community": "Komunita",
+  "tab.more": "Více",
+
+  "dashboard.section.core": "Core",
+  "dashboard.section.diary": "Deník",
+  "dashboard.section.food": "Jídlo",
+  "dashboard.section.body": "Tělo",
+  "dashboard.section.chat": "Chat",
+
+  "drawer.toggleTheme": "Přepnout režim",
+  "drawer.switchToMan": "Přepnout na Muž",
+  "drawer.switchToWoman": "Přepnout na Žena",
+
+  "drawer.core.overview": "Přehled",
+  "drawer.core.goals": "Cíle",
+  "drawer.core.insights": "Insighty",
+
+  "drawer.diary.addEntry": "Přidat záznam",
+  "drawer.diary.history": "Historie",
+  "drawer.diary.templates": "Šablony",
+
+  "drawer.food.addFood": "Přidat jídlo",
+  "drawer.food.scan": "Skenovat",
+  "drawer.food.favorites": "Oblíbené",
+
+  "drawer.body.measurements": "Měření",
+  "drawer.body.progress": "Progres",
+  "drawer.body.photos": "Fotky",
+
+  "drawer.chat.newChat": "Nový chat",
+  "drawer.chat.coach": "Kouč",
+  "drawer.chat.saved": "Uložené",
+
+  "drawer.community.groups": "Skupiny",
+  "drawer.community.chat": "Chat",
+  "drawer.community.events": "Události",
+  "drawer.community.members": "Členové",
+
+  "drawer.more.profile": "Profil",
+  "drawer.more.settings": "Nastavení",
+  "drawer.more.about": "O aplikaci",
+   "tab.food": "Jídlo",
+  "tab.body": "Tělo",
+  "tab.chat": "Chat",
+
+  "dashboard.greeting": "Dobré odpoledne, {name}!",
+  "dashboard.subtitle": "Tvůj den v kostce",
+  "dashboard.pill.daily": "Dnes",
+  "dashboard.pill.weekly": "Týden",
+  "dashboard.pill.stats": "Statistiky",
+
+  "dashboard.kcal": "kcal",
+  "dashboard.stat.protein": "Protein",
+  "dashboard.stat.carbs": "Sacharidy",
+  "dashboard.stat.fiber": "Vláknina",
+  "dashboard.stat.fat": "Tuky",
+  "dashboard.value.grams": "{g} g",
+
+  "dashboard.chip.water": "Voda {cur}/{goal}",
+  "dashboard.chip.injectionIn": "Injekce za {d} d",
+  "dashboard.chip.mood": "Nálada: {value}",
+
+  "dashboard.energyToday": "Energie dnes",
+  "dashboard.energyRange": "09:00  →  21:00",
+
+  "dashboard.action.addFood": "Přidat jídlo",
+  "dashboard.action.scan": "Sken",
+  "dashboard.action.saveMood": "Uložit náladu",
+
+  "dashboard.macros": "Makra",
+  "dashboard.macrosFooter": "Protein / Sacharidy / Tuky",
+
+  "dashboard.thisWeek": "Tento týden",
+  "dashboard.weekdaysShort": "Po  Út  St  Čt  Pá  So  Ne",
+  "dashboard.goalKcalPerDay": "Cíl: {kcal} kcal/den",
+
+  "dashboard.moodQuestion": "Jak se dnes cítíš?",
+  "dashboard.mood.great": "Skvěle",
+  "dashboard.mood.good": "Dobře",
+  "dashboard.mood.neutral": "Neutrálně",
+  "dashboard.mood.tired": "Unaveně",
+  "dashboard.mood.stressed": "Ve stresu"
 }
