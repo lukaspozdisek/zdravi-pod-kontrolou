@@ -1,17 +1,23 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+class SunSectionMenuItem {
+  final String label;
+  final IconData icon;
+
+  const SunSectionMenuItem({
+    required this.label,
+    required this.icon,
+  });
+}
 
 class SunSectionCarousel extends StatefulWidget {
   /// ✅ Controls spacing between ALL items (inactive ↔ inactive too).
-  /// Smaller = items closer together (more visible at once).
-  /// Larger = more space between items (fewer visible) and edge items hide behind the panel.
-  /// Examples: 0.18 tight • 0.20 default • 0.22 roomy • 0.24 wide
-  static const double viewportFraction =
-      0.24; //- mezery mezi neaktivnim tlacitkem
+  static const double viewportFraction = 0.24;
 
   final List<SunSectionMenuItem> items;
   final int index;
@@ -32,16 +38,8 @@ class SunSectionCarousel extends StatefulWidget {
 
 class _SunSectionCarouselState extends State<SunSectionCarousel> {
   static const double _panelHeight = 92;
-
-  // Extra headroom so the selected item can pop out without being clipped vertically.
   static const double _overflow = 26;
-
-  // ✅ Change this number to control ONLY the gap around the active item (neighbors push away).
-  // 12 = subtle, 18 = nice, 26 = big.
-  static const double _neighborGap = 18.0; // mezera mezi aktivnim a neaktivnim
-
-  // ✅ How much horizontal inset the carousel has inside the rounded panel.
-  // Larger = edge items hide sooner; Smaller = edge items are more visible.
+  static const double _neighborGap = 18.0;
   static const double _hPad = 10.0;
 
   late final PageController _pc;
@@ -144,31 +142,24 @@ class _SunSectionCarouselState extends State<SunSectionCarousel> {
             : (i == widget.index ? 1.0 : 0.0);
 
         final tE = _easeElastic(t);
-
         final scale = 0.88 + (0.30 * tE);
         final dir = (pageNow - i).clamp(-1.0, 1.0);
-        final dist = (pageNow - i).abs();
 
-        // ✅ Only the immediate neighbors of the SELECTED index get pushed away.
-// Use widget.index (your selected tab) so BOTH neighbors move together.
+        // Neighbors of SELECTED index get pushed away.
         final isLeftNeighbor = i == widget.index - 1;
         final isRightNeighbor = i == widget.index + 1;
 
-// Drive the gap by the ACTIVE item's progress (smoothly animates while scrolling).
         final activeT = hasDims
             ? (1 - (pageNow - widget.index).abs()).clamp(0.0, 1.0)
             : 1.0;
         final activeE = _easeElastic(activeT);
 
-// ✅ Positive gap value = neighbors move AWAY from active.
-// Left neighbor goes left (negative), right neighbor goes right (positive).
         final neighborPush = isLeftNeighbor
             ? (-_neighborGap * activeE)
             : (isRightNeighbor ? (_neighborGap * activeE) : 0.0);
 
         final parallaxX = kIsWeb ? 0.0 : 6.0 * ((1 - t) * dir);
 
-        // Pop out (vertical), but keep all items vertically centered inside the panel.
         final popY = kIsWeb ? -14.0 : -18.0;
         final liftY = popY * tE;
 
@@ -176,7 +167,6 @@ class _SunSectionCarouselState extends State<SunSectionCarousel> {
 
         return Center(
           child: Transform.translate(
-            // ✅ Horizontal spacing is done by translating neighbors (NO padding → no “shrinking” look).
             offset: Offset(parallaxX + neighborPush, liftY),
             child: Transform.rotate(
               angle: tilt,
@@ -207,6 +197,7 @@ class _SunSectionCarouselState extends State<SunSectionCarousel> {
     final gender = settings.genderMode;
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
+
     final gradient = SunTheme.brandGradient70_30(gender);
     final accent = SunTheme.accent(gender, brightness);
 
@@ -222,7 +213,6 @@ class _SunSectionCarouselState extends State<SunSectionCarousel> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Background panel (clipped)
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(28),
@@ -242,9 +232,6 @@ class _SunSectionCarouselState extends State<SunSectionCarousel> {
               ),
             ),
           ),
-
-          // ✅ Give the PageView extra height BOTH above and below (vertical pop-out),
-          // but CLIP horizontally so edge items hide behind the rounded panel.
           Positioned(
             left: 0,
             right: 0,
@@ -315,29 +302,22 @@ class _SunCircleMenuChip extends StatelessWidget {
 
     final theme = Theme.of(context);
 
-    // same tokens as SunBottomMenu
     final activeText = theme.textTheme.bodyMedium?.color ??
         (isDark ? Colors.white : Colors.black);
     final mutedText = theme.textTheme.bodySmall?.color ??
         (isDark ? Colors.white70 : Colors.black54);
 
-    final mutedIcon = mutedText;
-
-    // circle neutrals
     final neutralStroke =
         (isDark ? Colors.white : Colors.black).withOpacity(0.10);
 
-    // unified colors
     final labelColor = active ? activeText : mutedText;
-    final iconColor = active ? accent : mutedIcon;
+    final iconColor = active ? accent : mutedText;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(24),
-
-        // ✅ úplně vypne ripple / highlight / hover / focus overlay
         splashFactory: NoSplash.splashFactory,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -345,13 +325,11 @@ class _SunCircleMenuChip extends StatelessWidget {
         focusColor: Colors.transparent,
         overlayColor: MaterialStateProperty.all(Colors.transparent),
         canRequestFocus: false,
-
         child: SizedBox(
           width: 86,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ===== HALO / AURA =====
               SizedBox(
                 width: 80,
                 height: 80,
@@ -379,8 +357,6 @@ class _SunCircleMenuChip extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // Main circle button
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 220),
                       curve: Curves.easeOutCubic,
