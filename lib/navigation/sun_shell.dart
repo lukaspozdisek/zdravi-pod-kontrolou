@@ -27,6 +27,11 @@ class SunShell extends StatefulWidget {
 
 class _SunShellState extends State<SunShell> {
   int index = 0;
+  int diarySectionIndex = 0;
+  int communitySectionIndex = 0;
+
+  void _setDiarySection(int i) => setState(() => diarySectionIndex = i);
+  void _setCommunitySection(int i) => setState(() => communitySectionIndex = i);
 
   /// Dashboard top carousel section (Core/Diary/Food/Body/Chat/...)
   int dashboardSectionIndex = 1;
@@ -459,9 +464,15 @@ class _SunShellState extends State<SunShell> {
             sectionIndex: dashboardSectionIndex,
             onSectionChanged: _setDashboardSection,
           ),
-          const DiaryPage(),
+          DiaryPage(
+            sectionIndex: diarySectionIndex,
+            onSectionChanged: _setDiarySection,
+          ),
           const CorePage(),
-          const CommunityPage(),
+          CommunityPage(
+            sectionIndex: communitySectionIndex,
+            onSectionChanged: _setCommunitySection,
+          ),
           const MorePage(),
         ],
       ),

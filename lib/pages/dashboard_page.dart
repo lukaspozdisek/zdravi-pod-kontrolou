@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:zdravi_pod_kontrolou/theme/sun_theme.dart';
 import 'package:zdravi_pod_kontrolou/widgets/controls/sun_gradient_button.dart';
 import 'package:zdravi_pod_kontrolou/widgets/controls/sun_pill_tabs.dart';
-import 'package:zdravi_pod_kontrolou/widgets/sections/sun_section_carousel.dart';
 import 'package:zdravi_pod_kontrolou/core/app_scope.dart';
 import 'package:zdravi_pod_kontrolou/core/sun_gender_mode.dart';
 import 'package:zdravi_pod_kontrolou/l10n/app_localizations.dart';
 
 class DashboardPage extends StatefulWidget {
-  final int sectionIndex;
-  final ValueChanged<int> onSectionChanged;
+  final int sectionIndex; // kept for compatibility with SunShell
+  final ValueChanged<int> onSectionChanged; // kept for compatibility
 
   const DashboardPage({
     super.key,
@@ -30,9 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
     final settings = AppScope.of(context);
     final genderMode = settings.genderMode;
 
-    final brightness = Theme.of(context).brightness;
     final cs = Theme.of(context).colorScheme;
-
     final accent = cs.primary;
     final secondary = cs.secondary;
 
@@ -40,7 +37,6 @@ class _DashboardPageState extends State<DashboardPage> {
     final muted =
         Theme.of(context).textTheme.bodySmall?.color ?? Colors.white70;
 
-    // Demo data (jen pro vizuál)
     final kcalLine = <double>[
       120,
       180,
@@ -67,7 +63,7 @@ class _DashboardPageState extends State<DashboardPage> {
             padding: EdgeInsets.zero,
             children: [
               Text(
-                context.tr('dashboard.greeting', params: {'name': 'Lukas'}),
+                context.tr('dashboard.greeting'),
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 6),
@@ -77,29 +73,8 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               const SizedBox(height: 14),
 
-              // TOP CIRCULAR MENU
-              SunSectionCarousel(
-                items: [
-                  SunSectionMenuItem(
-                      label: context.tr('tab.core'), icon: Icons.home_rounded),
-                  SunSectionMenuItem(
-                      label: context.tr('tab.diary'), icon: Icons.book_rounded),
-                  SunSectionMenuItem(
-                      label: context.tr('tab.food'),
-                      icon: Icons.restaurant_rounded),
-                  SunSectionMenuItem(
-                      label: context.tr('tab.body'),
-                      icon: Icons.fitness_center_rounded),
-                  SunSectionMenuItem(
-                      label: context.tr('tab.chat'), icon: Icons.forum_rounded),
-                ],
-                index: widget.sectionIndex,
-                onChanged: widget.onSectionChanged,
-              ),
+              // ✅ NO carousel on Dashboard
 
-              const SizedBox(height: 12),
-
-              // PILL SWITCH
               SunPillTabs(
                 items: [
                   context.tr('dashboard.pill.daily'),
@@ -118,7 +93,6 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               const SizedBox(height: 16),
 
-              // MAIN SUMMARY CARD
               _GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +209,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
               const SizedBox(height: 14),
 
-              // MACROS CARD
               _GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,7 +264,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
               const SizedBox(height: 14),
 
-              // WEEKLY CARD
               _GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,7 +292,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
               const SizedBox(height: 14),
 
-              // MOOD CARD
               _GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -651,10 +622,6 @@ class _SquareAction extends StatelessWidget {
   }
 }
 
-/* =========================
-   Gender switch
-========================= */
-
 class _RowGenderSwitch extends StatelessWidget {
   final SunGenderMode mode;
   final Color accent;
@@ -735,10 +702,6 @@ class _SwitchItem extends StatelessWidget {
     );
   }
 }
-
-/* =========================
-   Charts (no packages)
-========================= */
 
 class _LineChart extends StatelessWidget {
   final List<double> values;

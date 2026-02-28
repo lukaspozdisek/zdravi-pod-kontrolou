@@ -55,6 +55,7 @@ class SunApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
 
+            // ✅ SunShell reads everything from AppScope (no params here)
             home: const SunShell(),
           );
         },
